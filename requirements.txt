@@ -1,0 +1,8 @@
+dill
+Flask
+gunicorn
+Jinja2
+oauth
+oauthlib
+requests
+simplejson
