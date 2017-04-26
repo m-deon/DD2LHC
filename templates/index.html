@@ -6,10 +6,30 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" type="text/css" />
+    <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="static/style.css" />
+    {{ script | safe }}
 	</head>
 	<body>
-		<div>
-  			<h1>Hello, World!</h1>
-		</div>
+		<div class=page>
+			<div class="col-md-6">
+      <h3><span class="glyphicon glyphicon-info-sign"></span> How this app works</h3>
+      <ul>
+        <li>Select two or more limit samples</li>
+
+        <li>Create comparison plot</li>
+        <li>Download PDF for publications.</li>
+        <li>Use XXX to cite us</li>
+      </ul>
+      Bokeh version: {{bokeh_version}}
+
+      <h3>The plot</h3>
+      {{the_div|safe}}
+      <br /><br />
+      <h3>The data</h3>
+      {{ table|safe }}
+    </div>
+    </div>
 	</body>
 </html>
