@@ -2,12 +2,28 @@ import pandas as pd
 import math
 import os
 import numpy as np
-
+from glob import glob
 # whole bunch of defintions
 gDM = 1.
 gu = gd = gs = 0.25  # set to DM LHC WG stuff
 mn, conv_units = 0.938, 2.568 * pow(10., 27.)
 Delta_d_p, Delta_u_p, Delta_s_p = -0.42, 0.85, -0.08
+
+DATA_LOCATION = 'data/'
+DATA_FILE_EXT = '.dat'
+
+
+
+def dataset_names():
+    datasets = glob('data/*.dat')
+    for dataset in datasets:
+        dataset = dataset.replace(DATA_LOCATION, '')
+        dataset = dataset.replace(DATA_FILE_EXT, '')
+        yield dataset
+
+def get_datasets():
+    return list(dataset_names())
+
 
 
 def dd2lhc(df):
@@ -37,7 +53,12 @@ def lhc2dd(df):
 
 
 
-def get_data(input_file='data/PICOSD_p.dat', dataset_type='DD'):
+def get_data(dataset='PICOSD_p'):
+    dataset_type = 'DD'
+    if dataset in ['DD_2_LHC_n', 'DD_2_LHC_p', 'mMedmDM1', 'mMedmDM2']:
+        dataset_type = 'LHC'
+    input_file = os.path.join(DATA_LOCATION, dataset + DATA_FILE_EXT)
+
     names = ['m_DM', 'sigma']
     if dataset_type == 'LHC':
         names = ['m_med', 'm_DM']
