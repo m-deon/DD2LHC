@@ -12,7 +12,7 @@ from flask import send_from_directory
 from plotter import get_figure, get_data, get_datasets
 from forms import DatasetForm
 
-UPLOAD_FOLDER = '/tmp/'
+UPLOAD_FOLDER = 'data/'
 ALLOWED_EXTENSIONS = set(['txt', 'csv', 'dat'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
