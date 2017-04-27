@@ -7,3 +7,8 @@ table.dataframe, .dataframe th, .dataframe td {
   margin-bottom: 40px;
   font-size: 0.9em;
 }
+.input-group {
+ 	width:50%;
+ 	float:none;
+ 	margin:0 auto;
+}

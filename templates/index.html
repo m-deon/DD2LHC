@@ -1,35 +1,77 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Hello, World!</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" type="text/css" />
-    <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="static/style.css" />
-    {{ script | safe }}
-	</head>
-	<body>
-		<div class=page>
-			<div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-info-sign"></span> How this app works</h3>
-      <ul>
-        <li>Select two or more limit samples</li>
 
-        <li>Create comparison plot</li>
-        <li>Download PDF for publications.</li>
-        <li>Use XXX to cite us</li>
-      </ul>
-      Bokeh version: {{bokeh_version}}
+<head>
+	<meta charset="utf-8">
+	<title>DD2LHC</title>
 
-      <h3>The plot</h3>
-      {{the_div|safe}}
-      <br /><br />
-      <h3>The data</h3>
-      {{ table|safe }}
-    </div>
-    </div>
-	</body>
+	<!-- custom -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+
+	<!-- bokeh -->
+	<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" type="text/css" />
+	<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
+
+	<!-- boostrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+	<!-- plot -->
+	{% if plot_script %}
+		{{ plot_script | safe}}
+	{% endif %}
+</head>
+
+<body>
+<div class="container">
+  <div class="row  justify-content-start" style="margin-top:5%;">
+  	<div class="col-5">
+  		<h3>How this app works</h3>
+  		<ul>
+  			<li>Select two or more limit samples</li>
+
+  			<li>Create comparison plot</li>
+  			<li>Download PDF for publications.</li>
+  			<li>Use XXX to cite us</li>
+  		</ul>
+  	</div>
+
+  	<div class="col">
+  		<form method="POST" action="/">
+  			<input type=file name=file class="btn btn-default">
+  			<input type=submit value=Upload class="btn btn-default">
+  		</form>
+  	</div>
+  </div>
+  <!-- <div class="row" style="margin-top:5%;">
+  <div class="input-group col-md-7">
+  	<form method="POST" action="/">
+  		<input type=file name=file class="btn btn-default">
+  		<input type=submit value=Upload class="btn btn-default">
+  	</form>
+  </div>
+  </div> -->
+
+
+  <div class="row justify-content-center" style="margin-top:5%;">
+  	<div class="col-md-auto col-md-offset-5">
+  		{% if data_table is defined %}
+  			<h3>The data</h3>
+  			{{ data_table | safe }}
+  		{% endif %}
+  	</div>
+
+  	<div class="col-md-4">
+  		Bokeh version: {{bokeh_version}}
+  		{% if plot_div is defined %}
+  		<h3>The plot</h3>
+  			{{ plot_div | safe }}
+  		{% endif %}
+  	</div>
+  </div>
+</div>
+</body>
+
 </html>

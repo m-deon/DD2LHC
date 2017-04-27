@@ -6,3 +6,4 @@ oauth==1.0.1
 oauthlib==2.0.2
 requests==2.7.0
 simplejson==3.10.0
+bokeh==0.12.5

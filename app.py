@@ -16,6 +16,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -28,37 +29,46 @@ def main():
 
 @app.route('/index')
 def index():
-    plot = figure()
-    plot.circle([1, 2], [3, 4])
-
-    script, div = components(plot, CDN)
-
-    p = figure(plot_width=400, plot_height=400)
-
-    # add a square renderer with a size, color, and alpha
-    # p.square([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], size=20, color="olive", alpha=0.5)
-
-    df = get_data('data/PICOSD_p.dat')
+    df1 = get_data('data/PICOSD_p.dat')
     df2 = get_data('data/LHC_2_DD_n.dat')
-    df3 = get_data('data/DD_2_LHC_p.dat')
-    p = figure(plot_width=400, plot_height=400, y_axis_type="log",
-               title='DD2LHC Pico (p, axial)', x_axis_label='m_med',
-               y_axis_label='m_DM')
-    p.line(df['m_med'], df['m_DM'], line_width=2,
-           color='red', legend=df['label'][0])
-    p.line(df2['m_med'], df2['m_DM'], line_width=2,
-           color='blue', legend=df2['label'][0])
-    p.line(df3['m_med'], df3['m_DM'], line_width=2,
-           color='green', legend=df3['label'][0])
+    df3 = get_data('data/mMedmDM1.dat', dataset_type='LHC')
+    df4 = get_data('data/DD_2_LHC_p.dat', dataset_type='LHC')
+    # df4['m_med'] = df4['m_med']/100
+    dfs = [df1, df2, df3, df4]
+    colors = ['red', 'blue', 'green', 'orange']
 
-    all_data = pd.concat([df, df2, df3])
-    # fig = get_figure(df)
-    # p = mpl.to_bokeh(fig)
+    p = figure(
+        title='DD2LHC Pico (p, axial)',
+        tools='wheel_zoom, pan, save',
+        # responsive=True,
+        x_axis_label='m_med',
+        y_axis_label='m_DM',
+        y_axis_type="log",
+        plot_width=600,
+        plot_height=600,
+    )
+
+    for df, color in zip(dfs, colors):
+        p.line(df['m_med'], df['m_DM'], line_width=2,
+               color=color, legend=df['label'][0])
+    #
+    # p.line(df['m_med'], df['m_DM'], line_width=2,
+    #        color='red', legend=df['label'][0])
+    # p.line(df2['m_med'], df2['m_DM'], line_width=2,
+    #        color='blue', legend=df2['label'][0])
+    # p.line(df3['m_med'], df3['m_DM'], line_width=2,
+    #        color='green', legend=df3['label'][0])
+
+    all_data = pd.concat(dfs)
 
     script, div = components(p, CDN)
-    return render_template('index.html', script=script, the_div=div, bokeh_version=bokeh.__version__, table=all_data.to_html())
+    return render_template('index.html', plot_script=script, plot_div=div,
+                           bokeh_version=bokeh.__version__,
+                           data_table=all_data.to_html())
 
 # improve with
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -86,6 +96,7 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
+
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
