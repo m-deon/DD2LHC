@@ -9,4 +9,4 @@ simplejson==3.10.0
 bokeh==0.12.5
 WTForms==2.1
 Flask-WTF==0.14.2
-pands==0.20.3
+pandas==0.20.3
