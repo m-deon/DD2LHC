@@ -90,7 +90,7 @@ def get_figure(df):
     ax.set_ylabel(r'$m_{DM}$')
     ax.semilogy(df['m_med'], df['m_DM'], color='red')
     return fig
-    fig.savefig('pico2plane2.png')
+#    fig.savefig('pico2plane2.png')
 
 if __name__ == '__main__':
     df = get_data('input/LHC_2_DD_p.dat')
