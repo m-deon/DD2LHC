@@ -13,6 +13,6 @@ pip install -r requirements.txt
 
 To run locally:
 ```
-source activate dd2lhc #if startig in new shel
+source activate dd2lhc #if in new session
 python app.py
 ```
