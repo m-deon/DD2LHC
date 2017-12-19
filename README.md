@@ -10,3 +10,9 @@ source activate dd2lhc
 conda install -y --file conda-requirements.txt
 pip install -r requirements.txt
 ```
+
+To run locally:
+```
+source activate dd2lhc #if startig in new shel
+python app.py
+```
