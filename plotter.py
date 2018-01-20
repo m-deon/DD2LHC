@@ -3,6 +3,7 @@ import math
 import os
 import numpy as np
 from glob import glob
+from flask import session
 # whole bunch of defintions
 gDM = 1.
 gu = gd = gs = 0.25  # set to DM LHC WG stuff
@@ -11,7 +12,6 @@ Delta_d_p, Delta_u_p, Delta_s_p = -0.42, 0.85, -0.08
 
 DATA_LOCATION = 'data/'
 DATA_FILE_EXT = '.dat'
-
 
 
 def dataset_names():
@@ -24,10 +24,16 @@ def dataset_names():
 def get_datasets():
     return list(dataset_names())
 
+def set_gSM(_gU,_gD,_gS):
+    global gu, gd, gs
+    gu = _gU
+    gd = _gD
+    gs = _gS
 
+def get_gSM():
+    return gu, gd, gs
 
 def dd2lhc(df):
-    gu = gd = gs = 0.25
     f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
 
     # calculate mu
@@ -42,7 +48,6 @@ def dd2lhc(df):
 
 
 def lhc2dd(df):
-    gu = gd = gs = 0.25
     f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
     # calculate mu
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
@@ -55,8 +60,14 @@ def lhc2dd(df):
 
 def get_data(dataset='PICOSD_p'):
     dataset_type = 'DD'
+    #Check if the dataset if part of the default
     if dataset in ['DD_2_LHC_n', 'DD_2_LHC_p', 'mMedmDM1', 'mMedmDM2']:
         dataset_type = 'LHC'
+    #Check if the dataset was imported, if so, load the datatype from the saved session
+    filename = dataset+'.dat'
+    if filename in session:
+        dataset_type = session[filename]
+
     input_file = os.path.join(DATA_LOCATION, dataset + DATA_FILE_EXT)
 
     names = ['m_DM', 'sigma']
