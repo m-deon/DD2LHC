@@ -146,8 +146,11 @@
 	<div class="row justify-content-start" style="margin-top:5%;">
 		<div class="col">
 			<h3>Selected datasets</h3>
-			{% for dataset in selected_datasets  %}
-			    {{dataset}}<br>
+			{% for data in metadata  %}
+					{{data['fileName']}}<br>
+					{{data['dataLabel']}}<br>
+					{{data['dataComment']}}<br>
+					<hr>
 			{% endfor %}
 		</div>
 		<div class="col justify-content-end">

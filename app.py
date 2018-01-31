@@ -10,17 +10,17 @@ import bokeh
 import pandas as pd
 from flask import send_from_directory
 
-from plotter import get_figure, get_data, get_datasets, DATA_LOCATION, set_gSM, get_gSM
+from plotter import get_figure, get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM
 from forms import DatasetForm, UploadForm, Set_gSM_Form
 
-ALLOWED_EXTENSIONS = set(['txt', 'csv', 'dat'])
+ALLOWED_EXTENSIONS = set(['xml'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = DATA_LOCATION
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 's3cr3t'
 
 #Default
-selected_datasets = ['PICOSD_p', 'LHC_2_DD_n', 'mMedmDM1', 'DD_2_LHC_p']
+selected_datasets = ['495', '496']
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -65,6 +65,7 @@ def index():
 
     datasets = selected_datasets
     dfs = map(get_data, datasets)
+    metadata = map(get_metadata, datasets)
     colors = cycle(['red', 'blue', 'green', 'orange'])
 
     p = figure(
@@ -88,6 +89,7 @@ def index():
                            bokeh_version=bokeh.__version__,
                            data_table=all_data.to_html(),
                            datasets = known_datasets,
+                           metadata = metadata,
                            dataset_selection = dataset_selection,
                            selected_datasets = selected_datasets,
                            dataset_upload = dataset_upload,
