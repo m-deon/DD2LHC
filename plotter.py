@@ -96,29 +96,41 @@ def get_metadata(dataset):
 def get_data(dataset):
 
     input_file = os.path.join(DATA_LOCATION, dataset + DATA_FILE_EXT)
+    #TODO: Validate file/dataset
 
     #XML Parsing
     result = untangle.parse(input_file)
     dataValues = result.limit.data_values.cdata
     experiment = result.limit.experiment.cdata
+    yRescale = result.limit.y_rescale.cdata
     #print (dataValues)
 
-    #remove leading {[, trailing ]}, ';'
-    rawData = dataValues.replace("{[","").replace("]}","").replace(";","")
+    #remove leading {[, trailing ]}
+    rawData = dataValues.replace("{[","").replace("]}","")
     data = StringIO(rawData)
 
+    print(experiment)
+
     #Determine data type
-    if experiment == 'LUX-ZEPLIN':
+    if experiment == 'LUX-ZEPLIN' or experiment == 'LUX':
         dataset_type = 'DD'
         names = ['m_DM', 'sigma']
     else:
         dataset_type = 'LHC'
         names = ['m_med', 'm_DM']
-    #parse
-    df = pd.read_csv(data, delim_whitespace=True, names=names)
 
+    #parse
+    df = pd.read_csv(data, delim_whitespace=True, lineterminator=';', names=names)
+    #adjust the yRescale, ie (multiply every value in column index 1 with the yRescale)
+    df.iloc[:, 1] =  df.iloc[:, 1].apply(lambda x: x * float(yRescale))
+
+    #add a coloum of labels
     label = os.path.basename(input_file).split('.')[0]
     df.insert(0, 'label', label)
+
+    #Verification
+    if experiment == 'LUX':
+        print(df)
 
     #convert
     if dataset_type == 'DD':

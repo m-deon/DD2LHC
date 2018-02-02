@@ -20,7 +20,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 's3cr3t'
 
 #Default
-selected_datasets = ['495', '496']
+selected_datasets = ['495', 'LUX_2016_SD_p']
 
 def allowed_file(filename):
     return '.' in filename and \
