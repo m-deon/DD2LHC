@@ -25,6 +25,32 @@
 </head>
 
 <body class="bg-light text-dark">
+	<script type="text/javascript">
+	function displayMetadata(form){
+		//Parse all metadata from flask into data structure
+		var metadata = [];
+		{% for data in allmetadata  %}
+		metadata.push({{data|tojson}});
+		{% endfor %}
+		//Generate the new metadata to display, depending if item is selected
+		var displayText = "";
+		for (i=0; i<form.options.length; i=i+1) {
+    if (form.options[i].selected ) {
+				displayText += getMetadataDisplay(metadata[i]);
+    	}
+		}
+		//Push the text to the html element
+		var textElement = document.getElementById('datasetInfo');
+		textElement.innerHTML = displayText;
+	}
+	function getMetadataDisplay(metadata){
+		var displayText = "";
+		displayText = displayText + metadata['fileName'] + '<br>';
+		displayText = displayText + metadata['dataComment']+ '<br>';
+		displayText = displayText + '<hr>';
+		return displayText;
+	}
+	</script>
 	<nav class="navbar navbar-expand-md bg-primary navbar-dark">
 		<div class="container">
 			<a class="navbar-brand" href="#">Navbar</a>
@@ -121,14 +147,22 @@
 			<h3>Select datasets to plot</h3>
 			<form method="POST" action="/index" name="dataset_selection">
 					{{ dataset_selection.hidden_tag() }}
-						{{ dataset_selection.datasets(class="selectpicker") }}
+
+										{{ dataset_selection.datasets(class="selectpicker",**{"onchange":"displayMetadata(this)"}) }}
 					<br>
 					<div style='text-align:right;'>
 						{{ dataset_selection.select(class="btn btn-default") }}
 					</div>
 			</form>
 		</div>
-
+		<div class="col justify-content-end">
+			<h3>Dataset Info</h3>
+				<div id='datasetInfo'>
+				</div>
+		</div>
+	</div>
+<hr>
+	<div class="row justify-content-start">
 		<div class="col justify-content-end">
 			<h3>gSM</h3>
 				<form method="POST" action="/updateValues">
@@ -140,7 +174,6 @@
 				</div>
 				</form>
 		</div>
-
   </div>
 <hr>
 	<div class="row justify-content-start" style="margin-top:5%;">

@@ -12,3 +12,6 @@ table.dataframe, .dataframe th, .dataframe td {
  	float:none;
  	margin:0 auto;
 }
+#datasets.selectpicker{
+  width: 300px;
+}

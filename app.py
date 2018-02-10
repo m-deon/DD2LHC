@@ -66,6 +66,7 @@ def index():
     datasets = selected_datasets
     dfs = map(get_data, datasets)
     metadata = map(get_metadata, datasets)
+    allmetadata = map (get_metadata,known_datasets)
     colors = cycle(['red', 'blue', 'green', 'orange'])
 
     p = figure(
@@ -92,10 +93,10 @@ def index():
                            metadata = metadata,
                            dataset_selection = dataset_selection,
                            selected_datasets = selected_datasets,
+                           allmetadata = allmetadata,
                            dataset_upload = dataset_upload,
                            gSM_refresh = gSM_refresh,
                            gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
-
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
