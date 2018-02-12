@@ -6,8 +6,11 @@ from wtforms import validators
 
 class DatasetForm(FlaskForm):
     select = SubmitField('Plot Data')
-    datasets = SelectMultipleField('datasets', choices=[], validators=[
-                                   validators.DataRequired()])
+    gSM_input = FloatField('gSM_input')
+    conditional_input = RadioField(u'Data Type', choices=[('SD', 'Spin-Dependent'), ('SI', 'Spin-Independent')], validators=[validators.Optional()])
+    datasets = SelectMultipleField('datasets', choices=[], validators=[validators.DataRequired()])
+    #gSM_input = FloatField('gSM_input')
+    #conditional_input = RadioField(u'Conditional Type', choices=[('SD', 'Spin-Dependent'), ('SI', 'Spin-Independent')])
 
 class UploadForm(FlaskForm):
     data_file = FileField('dataset', validators=[
@@ -18,6 +21,7 @@ class UploadForm(FlaskForm):
     upload_button = SubmitField('Upload Dataset')
 
 class Set_gSM_Form(FlaskForm):
+    #gSM_input = FloatField('gSM_input')
     gD_input = FloatField('gD_input')
     gU_input = FloatField('gU_input')
     gS_input = FloatField('gS_input')

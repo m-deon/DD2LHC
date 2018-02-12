@@ -33,25 +33,23 @@ def main():
 @app.route('/updateValues', methods=['GET', 'POST'])
 def updateValues():
     gSM_refresh = Set_gSM_Form()
-    gU = gSM_refresh.gU_input.data
-    gD = gSM_refresh.gD_input.data
-    gS = gSM_refresh.gS_input.data
-    set_gSM(gU,gD,gS)
+    gSM = gSM_refresh.gSM_input.data
+    set_gSM(gSM,gSM,gSM)
+    #Future: Individually set coupling constant
+    #gU = gSM_refresh.gU_input.data
+    #gD = gSM_refresh.gD_input.data
+    #gS = gSM_refresh.gS_input.data
+    #set_gSM(gU,gD,gS)
     return redirect(url_for('index'))
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     known_datasets = get_datasets()
-    dataset_selection = DatasetForm()
+    gu, gd, gs = get_gSM()
+
+    dataset_selection = DatasetForm(gSM_input=gu)
     dataset_selection.datasets.choices = zip(get_datasets(), get_datasets())
     dataset_upload = UploadForm()
-
-    gu, gd, gs = get_gSM()
-    gSM_refresh = Set_gSM_Form()
-    gSM_refresh.gU_input.default = gu
-    gSM_refresh.gD_input.default = gd
-    gSM_refresh.gS_input.default = gs
-    gSM_refresh.process()
 
     global selected_datasets
 
@@ -61,7 +59,9 @@ def index():
         print(dataset_selection.datasets.data)
         if dataset_selection.validate():
             selected_datasets = dataset_selection.datasets.data
-
+            gSM = dataset_selection.gSM_input.data
+            set_gSM(gSM,gSM,gSM)
+            gu, gd, gs = get_gSM()
 
     datasets = selected_datasets
     dfs = map(get_data, datasets)
@@ -95,7 +95,7 @@ def index():
                            selected_datasets = selected_datasets,
                            allmetadata = allmetadata,
                            dataset_upload = dataset_upload,
-                           gSM_refresh = gSM_refresh,
+                           gSM_gSM=gu,
                            gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
 
 @app.route('/upload', methods=['GET', 'POST'])

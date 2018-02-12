@@ -12,6 +12,46 @@ table.dataframe, .dataframe th, .dataframe td {
  	float:none;
  	margin:0 auto;
 }
+#dmTitle{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.0em;
+}
+.subTitle{
+  font-style: italic;
+}
+.headerTitle{
+  background-color: #0275d8;
+  font-size: 1.5em;
+  color: white;
+  margin-bottom: 10px;
+  border-width: 3px;
+  border-radius: 7px;
+  border-style: solid;
+  border-color: white;
+  padding-left: 10px;
+}
+#headerLogo{
+  width:100px;
+  height:100px;
+  float: left;
+}
+#dmLogo{
+  height:100px;
+}
 #datasets.selectpicker{
   width: 300px;
+}
+#plotButtons{
+  text-align: center;
+}
+.datainput {
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+#dataDiv{
+  display:none;
 }

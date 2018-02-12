@@ -109,8 +109,6 @@ def get_data(dataset):
     rawData = dataValues.replace("{[","").replace("]}","")
     data = StringIO(rawData)
 
-    print(experiment)
-
     #Determine data type
     if experiment == 'LUX-ZEPLIN' or experiment == 'LUX':
         dataset_type = 'DD'
@@ -127,10 +125,6 @@ def get_data(dataset):
     #add a coloum of labels
     label = os.path.basename(input_file).split('.')[0]
     df.insert(0, 'label', label)
-
-    #Verification
-    if experiment == 'LUX':
-        print(df)
 
     #convert
     if dataset_type == 'DD':
