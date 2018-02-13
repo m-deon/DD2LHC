@@ -7,7 +7,7 @@ from wtforms import validators
 class DatasetForm(FlaskForm):
     select = SubmitField('Plot Data')
     gSM_input = FloatField('gSM_input')
-    conditional_input = RadioField(u'Data Type', choices=[('SD', 'Spin-Dependent'), ('SI', 'Spin-Independent')], validators=[validators.Optional()])
+    conditional_input = RadioField(u'Data Type', choices=[(u'SD', 'Spin-Dependent'), (u'SI', 'Spin-Independent')], validators=[validators.Optional()])
     datasets = SelectMultipleField('datasets', choices=[], validators=[validators.DataRequired()])
     #gSM_input = FloatField('gSM_input')
     #conditional_input = RadioField(u'Conditional Type', choices=[('SD', 'Spin-Dependent'), ('SI', 'Spin-Independent')])

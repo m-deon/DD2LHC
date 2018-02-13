@@ -92,6 +92,36 @@
 		displayText = displayText + '<hr>';
 		return displayText;
 	}
+	function updateConditionalSelect(conditionalSelect){
+		var selectedInput = "";
+		var inputs = document.getElementsByName("conditional_input");
+		for (var i = 0, length = inputs.length; i < length; i++) {
+ 			if (inputs[i].checked) {
+  			// do whatever you want with the checked radio
+  			selectedInput = inputs[i].value;
+				// only one radio can be logically checked, don't check the rest
+  			break;
+ 			}
+		}
+
+		//Parse all metadata from flask into data structure
+		var metadata = [];
+		{% for data in allmetadata  %}
+		metadata.push({{data|tojson}});
+		{% endfor %}
+
+		var form = document.getElementById("datasets");
+		for (i=0; i<form.options.length; i=i+1) {
+			var meta = metadata[i];
+			//If this meta matches the selected input, then we select in form
+			form.options[i].selected = false; //Deselect previous selction
+			if(meta['spinDependency'] === selectedInput){
+				form.options[i].selected = true;
+			}
+		}
+		//Now make sure the metadata is correct
+		displayMetadata(form);
+	}
 	</script>
 
 	<!--
@@ -180,7 +210,7 @@
 
 		<div class="col justify-content-end">
 			<h3>Conditionally Select Datasets:</h3>
-				{{dataset_selection.conditional_input}}
+				{{dataset_selection.conditional_input(**{"onchange":"updateConditionalSelect(this)"}) }}
 		</div>
 
 	</div>
