@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>DM Limiter</title>
+
+	<!-- custom -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+	<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+
+	<!-- bokeh -->
+	<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" type="text/css" />
+	<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
+
+	<!-- boostrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+	<!-- plot -->
+	{% if plot_script %}
+		{{ plot_script | safe}}
+	{% endif %}
+</head>
+
+<body class="bg-light text-dark">
+
+	<nav class="navbar navbar-expand-md bg-primary navbar-dark" style="text-align:right">
+		<div class="container">
+			<div class="row">
+			<div class="col justify-content-start" style="text-align: left;">
+				<a class="btn btn-outline-primary text-white" href="http://www.brandeis.edu/departments/physics/">Brandeis University - Center for the Dark Universe</a>
+			</div>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="container">
+		<div class="row">
+			<div class="col-md-12" >
+				<div id="dmTitle">
+					DM Limiter
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" >
+				<p class="subTitle">Dark matter limit comparisons using simplified models</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" >
+				<p class="">Use XXX to cite us</p>
+			</div>
+		</div>
+	</div>
+
+<!-- -->
+
+<div class="headerTitle">
+	Comparison Plot
+</div>
+
+<div class="datainput">
+			<div class="row">
+				<div class="col"></div>
+				<div class="col justify-content-center">
+					{% if plot_div is defined %}
+						{{ plot_div | safe }}
+					{% endif %}
+				</div>
+				<div class="col"></div>
+			</div>
+			<hr>
+	<div class="row justify-content-start" style="margin-top:5%;">
+		<div class="col">
+			<h3>Selected Datasets:</h3>
+			{% for data in metadata  %}
+			<div class='row'>
+				<div class='col col-2'>Filename:</div>
+				<div class='col'>{{data['fileName']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-2'>Label:</div>
+				<div class='col'>{{data['dataLabel']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-2'>Comment:</div>
+				<div class='col'>{{data['dataComment']}}</div>
+			</div>
+			<hr>
+			{% endfor %}
+		</div>
+		<div class="col justify-content-end">
+			<h3>Selected Standard Model coupling constant:</h3>
+			<p>	gSM= {{gSM_gSM}}<br>
+			</p>
+		</div>
+	</div>
+</div>
+
+</div>
+
+
+</div> <!-- Container -->
+</body>
+</html>

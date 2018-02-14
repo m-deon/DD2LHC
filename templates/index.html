@@ -19,23 +19,46 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
-	<head>
-	    <script type="text/javascript">
-	        window.onload = function() {
-	          var dataBtn = document.getElementById("showData");
-						var pdfBtn = document.getElementById("downloadPDF");
-	          dataBtn.onclick = function() {
-							var data = document.getElementById("dataDiv");
-							data.style.display = "block";
-							return false;
-	          }
-						pdfBtn.onclick = function() {
-							alert('PDF Functionality coming next.');
-							return false;
-						}
-	        }
-	    </script>
-	</head>
+	<script type="text/javascript">
+		  window.onload = function() {
+		    var dataBtn = document.getElementById("showData");
+				var pdfBtn = document.getElementById("downloadPDF");
+		    dataBtn.onclick = function() {
+					var data = document.getElementById("dataDiv");
+					data.style.display = "block";
+					return false;
+		    }
+				pdfBtn.onclick = function() {
+					//redirect to pdf.html with selected datasets
+					//window.location.href = "{{ url_for('pdf') }}";
+					post('/pdf', {name: 'Johnny Bravo'});
+					return false;
+				}
+				function post(path, params, method) {
+			    method = method || "post"; // Set method to post by default if not specified.
+
+			    // The rest of this code assumes you are not using a library.
+			    // It can be made less wordy if you use one.
+			    var form = document.createElement("form");
+			    form.setAttribute("method", method);
+			    form.setAttribute("action", path);
+
+			    for(var key in params) {
+			        if(params.hasOwnProperty(key)) {
+			            var hiddenField = document.createElement("input");
+			            hiddenField.setAttribute("type", "hidden");
+			            hiddenField.setAttribute("name", key);
+			            hiddenField.setAttribute("value", params[key]);
+
+			            form.appendChild(hiddenField);
+			        }
+			    }
+
+			    document.body.appendChild(form);
+			    form.submit();
+				}
+		  }
+	</script>
 	<!-- plot -->
 	{% if plot_script %}
 		{{ plot_script | safe}}

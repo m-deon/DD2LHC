@@ -98,6 +98,48 @@ def index():
                            gSM_gSM=gu,
                            gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
 
+@app.route('/pdf', methods=['GET', 'POST'])
+def pdf():
+    gu, gd, gs = get_gSM()
+
+    global selected_datasets
+    #Will re-use the previously selected values for the dataset
+    #Optional: provide dataset files in the post parameters
+    if request.method == 'POST':
+        print('Made it to the post');
+
+    datasets = selected_datasets
+    dfs = map(get_data, datasets)
+    metadata = map(get_metadata, datasets)
+    allmetadata = map (get_metadata,known_datasets)
+    colors = cycle(['red', 'blue', 'green', 'orange'])
+
+    p = figure(
+        title='DD2LHC Pico (p, axial)',
+        tools='wheel_zoom, pan, save',
+        x_axis_label='m_med',
+        y_axis_label='m_DM',
+        y_axis_type="log",
+        plot_width=600,
+        plot_height=600,
+    )
+
+    for df, color in zip(dfs, colors):
+        p.line(df['m_med'], df['m_DM'], line_width=2,
+               color=color, legend=df['label'][0])
+
+    all_data = pd.concat(dfs)
+
+    script, div = components(p, CDN)
+    #ToDo: Turn this render_template into a PDF file and download
+    return render_template('pdf.html', plot_script=script, plot_div=div,
+                           bokeh_version=bokeh.__version__,
+                           data_table=all_data.to_html(),
+                           datasets = known_datasets,
+                           metadata = metadata,
+                           gSM_gSM=gu)
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm(CombinedMultiDict((request.files, request.form)))
