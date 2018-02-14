@@ -106,7 +106,7 @@ def pdf():
     #Will re-use the previously selected values for the dataset
     #Optional: provide dataset files in the post parameters
     if request.method == 'POST':
-        print('Made it to the post');
+        print('Use this area to parse for posted datasets');
 
     datasets = selected_datasets
     dfs = map(get_data, datasets)
