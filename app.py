@@ -109,11 +109,11 @@ def pdf():
         print('Use this area to parse for posted datasets');
 
     datasets = selected_datasets
+
     dfs = map(get_data, datasets)
     metadata = map(get_metadata, datasets)
-    allmetadata = map (get_metadata,known_datasets)
-    colors = cycle(['red', 'blue', 'green', 'orange'])
 
+    colors = cycle(['red', 'blue', 'green', 'orange'])
     p = figure(
         title='DD2LHC Pico (p, axial)',
         tools='wheel_zoom, pan, save',
@@ -135,7 +135,6 @@ def pdf():
     return render_template('pdf.html', plot_script=script, plot_div=div,
                            bokeh_version=bokeh.__version__,
                            data_table=all_data.to_html(),
-                           datasets = known_datasets,
                            metadata = metadata,
                            gSM_gSM=gu)
 
