@@ -32,7 +32,7 @@ def get_dd_data(dd_data):
 		mdm_dd = float(elems[0])
 		sig_dd_l.append(float(sig_dd))
 		mdm_dd_l.append(float(mdm_dd))
-		print str(sig_dd)+" "+str(mdm_dd)
+		#print str(sig_dd)+" "+str(mdm_dd)
 
 	return sig_dd_l, mdm_dd_l
 
@@ -116,8 +116,13 @@ dd_sig_3, dd_mdm_3 = get_dd_data(data3)
 #print arrays to make sure all is well
 
 #vector
-#print array_lhc_mdm_0
-#print array_lhc_sigma_0
+print lhc_mdm_0
+print lhc_sigma_0
+
+print '------------'
+
+print dd_mdm_1
+print dd_sig_1
 
 #scalar
 #print array_lhc_mdm_1
@@ -142,9 +147,10 @@ plt.yscale("log")
 plt.xscale("log")
 plt.grid(True)
 plt.legend(loc=1, ncol=1, borderaxespad=0.0, prop={'size': 9})
-plt.savefig("lhc_vec2.pdf")
+plt.savefig("lhc_vec2_2.pdf")
 plt.close()
 
+'''
 plt.title("SCALAR: LUX & CMS (LHC2DD)")
 plt.plot(lhc_mdm_1, lhc_sigma_1, 'k-', linewidth=3, color="#0165fc", label="CMS_axialn_2017, gSM = 1.0")
 plt.plot(dd_mdm_1, dd_sig_1, 'k-', linewidth=3, color="r", label="LUX_2016_axialn, gSM = 1.0")
@@ -180,3 +186,4 @@ plt.grid(True)
 plt.legend(loc=1, ncol=1, borderaxespad=0.0, prop={'size': 9})
 plt.savefig("lhc_axialn2.pdf")
 plt.close()
+'''

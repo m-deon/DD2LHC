@@ -50,8 +50,8 @@ def dd2lhc(df):
     # calculate mu
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
     # apply conversion units to sigma
-    df['sigma'] = df['sigma'] * conv_units
-    df['sigma_in_GeV'] = df['sigma']
+    #df['sigma'] = df['sigma']
+    df['sigma_in_GeV'] = df['sigma'] * conv_units
 
     # calculate m_mediator
     df['m_med'] = np.power(f * df['mu_nDM'], 0.5) / \
@@ -181,28 +181,22 @@ def get_figure(df):
 
 def make_plot(coupling, df_lhc, name_only, df_dd):
     import matplotlib.pyplot as plt
+    print ("LHC")
+    print (df_lhc)
+    print ("DD")
+    print (df_dd)
     plt.title(coupling + ": CMS & LUX (LHC2DD)")
-    plt.plot(df_lhc['mDM'],df_lhc['sigma'], 'k-', linewidth=3, color="#0165fc", label=name_only)
-    plt.plot(df_dd['mDM'], df_dd['sigma'], 'k-', linewidth=3, color="purple", label="LUX")
+    plt.plot(df_lhc['m_DM'],df_lhc['sigma'], 'k-', linewidth=3, color="#0165fc", label=name_only)
+    plt.plot(df_dd['m_DM'], df_dd['sigma'], 'k-', linewidth=3, color="purple", label="LUX")
     plt.ylabel("$ \sigma_{DM}$ (cross-section)")
     plt.xlabel("mDM")
     plt.yscale("log")
     plt.xscale("log")
     plt.grid(True)
     plt.legend(loc=1, ncol=1, borderaxespad=0.0, prop={'size': 9})
-    return plt.savefig("LUX&_" + name_only + ".pdf")
+    plt.savefig(name_only + ".pdf")
     plt.close()
-
-def test_figure():
-    lhc_df1 = get_data('CMS_monojet_July2017_VECTOR','vector')
-    lhc_df2 = get_data('CMS_monojet_July2017_VECTOR','scalar')
-    lhc_df3 = get_data('CMS_monojet_July2017_AXIAL_3','proton')
-    lhc_df4 = get_data('CMS_monojet_July2017_AXIAL_3','neutron')
-    dd_df1 = get_data('LUX_2016_SI')
-    dd_df2 = get_data('LUX_2016_SD_p')
-    dd_df3 = get_data('LUX_2016_SD_n')
-    #Test
-    make_plot("Vector",lhc_df1,"lhc_vec2_jc",dd_df1)
+    return
 
 if __name__ == '__main__':
     lhc_df1 = get_data('CMS_monojet_July2017_VECTOR','vector')
@@ -214,6 +208,6 @@ if __name__ == '__main__':
     dd_df3 = get_data('LUX_2016_SD_n')
     #Test
     make_plot("Vector",lhc_df1,"lhc_vec2_jc",dd_df1)
-    #make_plot("Vector",lhc_df2,"lhc_vec2_jc",dd_df1)
-    #make_plot("Vector",lhc_df3,"lhc_vec2_jc",dd_df2)
-    #make_plot("Vector",lhc_df4,"lhc_vec2_jc",dd_df3)
+    make_plot("Scalar",lhc_df2,"lhc_scalar2_jc",dd_df1)
+    make_plot("Proton",lhc_df3,"lhc_axialp2_jc",dd_df2)
+    make_plot("Neuton",lhc_df4,"lhc_axialn2_jc",dd_df3)
