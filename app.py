@@ -73,7 +73,7 @@ def index():
     colors = cycle(['red', 'blue', 'green', 'orange'])
 
     p = figure(
-        title='DD2LHC Pico (p, axial)',
+        title='Dark Matter Limiter Conversion Plot',
         tools='wheel_zoom, pan, save',
         x_axis_label='m_DM',
         x_axis_type="log",
