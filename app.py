@@ -10,7 +10,7 @@ import bokeh
 import pandas as pd
 from flask import send_from_directory
 
-from plotter import get_figure, get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM
+from plotter import get_figure, get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM, test_figure
 from forms import DatasetForm, UploadForm, Set_gSM_Form
 
 ALLOWED_EXTENSIONS = set(['xml'])
@@ -152,4 +152,5 @@ def upload():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
+    #test_figure()
     app.run(port=5000)
