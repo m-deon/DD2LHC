@@ -10,7 +10,7 @@ import bokeh
 import pandas as pd
 from flask import send_from_directory
 
-from plotter import get_figure, get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM, test_figure
+from plotter import get_figure, get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM, set_SI_modifier, get_SI_modifier
 from forms import DatasetForm, UploadForm, Set_gSM_Form
 
 ALLOWED_EXTENSIONS = set(['xml'])
@@ -20,7 +20,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 's3cr3t'
 
 #Default
-selected_datasets = ['495', 'LUX_2016_SI']
+selected_datasets = ['LUX_2016_SI', 'CMS_monojet_July2017_VECTOR']
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -46,6 +46,7 @@ def updateValues():
 def index():
     known_datasets = get_datasets()
     gu, gd, gs = get_gSM()
+    si_modifier = get_SI_modifier()
 
     dataset_selection = DatasetForm(gSM_input=gu)
     dataset_selection.datasets.choices = zip(get_datasets(), get_datasets())
@@ -62,6 +63,8 @@ def index():
             gSM = dataset_selection.gSM_input.data
             set_gSM(gSM,gSM,gSM)
             gu, gd, gs = get_gSM()
+            si_modifier = dataset_selection.radio_inputSI.data
+            set_SI_modifier(si_modifier)
 
     datasets = selected_datasets
     dfs = map(get_data, datasets)
@@ -72,15 +75,18 @@ def index():
     p = figure(
         title='DD2LHC Pico (p, axial)',
         tools='wheel_zoom, pan, save',
-        x_axis_label='m_med',
-        y_axis_label='m_DM',
+        x_axis_label='m_DM',
+        x_axis_type="log",
+        #y_axis_label="$\sigma_{DM}$ (cross-section)",
+        y_axis_label="sigma_DM (cross-section)",
         y_axis_type="log",
         plot_width=600,
         plot_height=600,
     )
 
     for df, color in zip(dfs, colors):
-        p.line(df['m_med'], df['m_DM'], line_width=2,
+        #p.line(df['m_med'], df['m_DM'], line_width=2,
+        p.line(df['m_DM'], df['sigma'], line_width=2,
                color=color, legend=df['label'][0])
 
     all_data = pd.concat(dfs)
@@ -95,6 +101,7 @@ def index():
                            selected_datasets = selected_datasets,
                            allmetadata = allmetadata,
                            dataset_upload = dataset_upload,
+                           si_modifier = si_modifier,
                            gSM_gSM=gu,
                            gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
 
@@ -117,15 +124,16 @@ def pdf():
     p = figure(
         title='DD2LHC Pico (p, axial)',
         tools='wheel_zoom, pan, save',
-        x_axis_label='m_med',
-        y_axis_label='m_DM',
+        x_axis_label='m_DM',
+        x_axis_type="log",
+        y_axis_label='sigma',
         y_axis_type="log",
         plot_width=600,
         plot_height=600,
     )
 
     for df, color in zip(dfs, colors):
-        p.line(df['m_med'], df['m_DM'], line_width=2,
+        p.line(df['m_DM'], df['sigma'], line_width=2,
                color=color, legend=df['label'][0])
 
     all_data = pd.concat(dfs)

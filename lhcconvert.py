@@ -116,13 +116,10 @@ dd_sig_3, dd_mdm_3 = get_dd_data(data3)
 #print arrays to make sure all is well
 
 #vector
-print lhc_mdm_0
-print lhc_sigma_0
-
-print '------------'
-
-print dd_mdm_1
-print dd_sig_1
+#print lhc_mdm_0
+#print lhc_sigma_0
+#print dd_mdm_1
+#print dd_sig_1
 
 #scalar
 #print array_lhc_mdm_1
