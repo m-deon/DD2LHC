@@ -85,9 +85,15 @@ def index():
     )
 
     for df, color in zip(dfs, colors):
+        label = df['label'][0]
+        #Appending the extrapolated data (lhc), messes with the dataframe and underlying types
+        #Not sure why, need to futher investigate.
+        if(isinstance(label,pd.Series)):
+            label = label.values[0]
+
         #p.line(df['m_med'], df['m_DM'], line_width=2,
         p.line(df['m_DM'], df['sigma'], line_width=2,
-               color=color, legend=df['label'][0])
+               color=color, legend=label)
 
     all_data = pd.concat(dfs)
 

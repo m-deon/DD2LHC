@@ -176,6 +176,7 @@ def get_data(dataset,modifier=''):
         else:
             lhc2dd_SI(df,modifier if modifier else si_modifier)
         #extrapolate LHC Data
+        #note, not sure if appending in this fashion is the best way to extrapolate and expand the dataframe
         extrap_mdm = range(1, int(min(df['m_DM'])))
         extrap_sigma = np.repeat(min(df['sigma']), len(extrap_mdm))
         extrap_df = pd.DataFrame({'label':label,'m_DM':extrap_mdm,'sigma':extrap_sigma})
