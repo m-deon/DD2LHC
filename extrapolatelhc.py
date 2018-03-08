@@ -99,9 +99,6 @@ def conv(path, coupling):
         sigma_conv_l.append(float(sigma_conv))
         mdm_l.append(float(mdm))
 
-    print ("New Min")
-    print min(sigma_conv_l)
-    print min(mdm_l)
     la = range(1, int(min(mdm_l)))
     lb = np.repeat(min(sigma_conv_l), len(la))
 
@@ -112,7 +109,6 @@ def extrapolate(path, coupling):
     orig_mdm, extrap_mdm, orig_sigma, extrap_sigma = conv(path, coupling)
     orig_mdm.extend(extrap_mdm)
     orig_sigma.extend(extrap_sigma)
-
     return orig_mdm, orig_sigma
 
 ##Where COUPLING is from the metadata of the input file (specifies interaction)

@@ -172,10 +172,19 @@ def get_data(dataset,modifier=''):
         dd2lhc(df)
     elif dataset_type == 'LHC':
         if spinDependency == 'SD':
-            lhc2dd_SD(df,sd_modifier)
+            lhc2dd_SD(df,modifier if modifier else sd_modifier)
         else:
-            lhc2dd_SI(df,si_modifier)
+            lhc2dd_SI(df,modifier if modifier else si_modifier)
+        #extrapolate LHC Data
+        extrap_mdm = range(1, int(min(df['m_DM'])))
+        extrap_sigma = np.repeat(min(df['sigma']), len(extrap_mdm))
+        extrap_df = pd.DataFrame({'label':label,'m_DM':extrap_mdm,'sigma':extrap_sigma})
+        df = df.append(extrap_df)
 
+    #Print Data to Verify
+    #pd.options.display.max_rows = 5
+    #pd.set_option('expand_frame_repr',False)
+    #print(df)
     return df
 
 def get_figure(df):
@@ -192,14 +201,8 @@ def get_figure(df):
 
 def make_plot(coupling, df_lhc, name_only, df_dd):
     import matplotlib.pyplot as plt
-    #print ("LHC")
-    #print (df_lhc)
-    #print ("DD")
-    #print (df_dd)
-    m_dm, sigma = extrapolate_lhc(df_lhc)
     plt.title(coupling + ": CMS & LUX (LHC2DD)")
-    #plt.plot(df_lhc['m_DM'],df_lhc['sigma'], 'k-', linewidth=3, color="#0165fc", label=name_only)
-    plt.plot(m_dm, sigma, 'k-', linewidth=3, color="#0165fc", label=name_only)
+    plt.plot(df_lhc['m_DM'],df_lhc['sigma'], 'k-', linewidth=3, color="#0165fc", label=name_only)
     plt.plot(df_dd['m_DM'], df_dd['sigma'], 'k-', linewidth=3, color="purple", label="LUX")
     plt.ylabel("$ \sigma_{DM}$ (cross-section)")
     plt.xlabel("mDM")
@@ -211,41 +214,16 @@ def make_plot(coupling, df_lhc, name_only, df_dd):
     plt.close()
     return
 
-def extrapolate_lhc(df):
-    extrap_mdm = range(1, int(min(df['m_DM'])))
-    extrap_sigma = np.repeat(min(df['sigma']), len(extrap_mdm))
-    m_dm_extra = np.append(df['m_DM'].values, extrap_mdm)
-    m_sigma_extra = np.append(df['sigma'].values, extrap_sigma)
-    return m_dm_extra, m_sigma_extra
-
-def extrapolate(df):
-    print(min(df['sigma']))
-    print(min(df['m_DM']))
-    extrap_mdm = range(1, int(min(df['m_DM'])))
-    extrap_sigma = np.repeat(min(df['sigma']), len(extrap_mdm))
-    print(extrap_mdm)
-    print(pd.Series(extrap_mdm))
-    df['m_DM'].merge(pd.Series(extrap_mdm))
-    df['sigma'].merge(pd.Series(extrap_sigma))
-    print(df)
-
 if __name__ == '__main__':
     lhc_df1 = get_data('CMS_monojet_July2017_VECTOR','vector')
-    #lhc_df2 = get_data('CMS_monojet_July2017_VECTOR','scalar')
-    #lhc_df3 = get_data('CMS_monojet_July2017_AXIAL_3','proton')
-    #lhc_df4 = get_data('CMS_monojet_July2017_AXIAL_3','neutron')
+    lhc_df2 = get_data('CMS_monojet_July2017_VECTOR','scalar')
+    lhc_df3 = get_data('CMS_monojet_July2017_AXIAL_3','proton')
+    lhc_df4 = get_data('CMS_monojet_July2017_AXIAL_3','neutron')
     dd_df1 = get_data('LUX_2016_SI')
-    #dd_df2 = get_data('LUX_2016_SD_p')
-    #dd_df3 = get_data('LUX_2016_SD_n')
+    dd_df2 = get_data('LUX_2016_SD_p')
+    dd_df3 = get_data('LUX_2016_SD_n')
 
-    #Extrapolate
-    #extrapolate(lhc_df1)
-    #extrapolate(lhc_df2)
-    #extrapolate(lhc_df3)
-    #extrapolate(lhc_df4)
-
-    #Test
-    make_plot("Vector",lhc_df1,"lhc_vec5_jc",dd_df1)
-    #make_plot("Scalar",lhc_df2,"lhc_scalar5_jc",dd_df1)
-    #make_plot("Proton",lhc_df3,"lhc_axialp5_jc",dd_df2)
-    #make_plot("Neuton",lhc_df4,"lhc_axialn5_jc",dd_df3)
+    make_plot("Vector",lhc_df1,"VEC_MESS5_jc",dd_df1)
+    make_plot("Scalar",lhc_df2,"lhc_scalar5_jc",dd_df1)
+    make_plot("Proton",lhc_df3,"lhc_axialp5_jc",dd_df2)
+    make_plot("Neuton",lhc_df4,"lhc_axialn5_jc",dd_df3)

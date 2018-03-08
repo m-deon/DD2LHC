@@ -105,10 +105,6 @@ def index():
                            gSM_gSM=gu,
                            gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
 
-def extrapolate(dfs):
-    
-    dfs = map(get_data, datasets)
-
 @app.route('/pdf', methods=['GET', 'POST'])
 def pdf():
     gu, gd, gs = get_gSM()
