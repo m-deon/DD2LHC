@@ -72,7 +72,18 @@ def index():
     allmetadata = map (get_metadata,known_datasets)
     colors = cycle(['red', 'blue', 'green', 'orange'])
 
-    p = figure(
+    p1 = figure(
+        title='Dark Matter Limiter Conversion Plot',
+        tools='wheel_zoom, pan, save',
+        x_axis_label='m_DM',
+        x_axis_type="log",
+        #y_axis_label="$\sigma_{DM}$ (cross-section)",
+        y_axis_label="sigma_DM (cross-section)",
+        y_axis_type="log",
+        plot_width=600,
+        plot_height=600,
+    )
+    p2 = figure(
         title='Dark Matter Limiter Conversion Plot',
         tools='wheel_zoom, pan, save',
         x_axis_label='m_DM',
@@ -92,13 +103,16 @@ def index():
             label = label.values[0]
 
         #p.line(df['m_med'], df['m_DM'], line_width=2,
-        p.line(df['m_DM'], df['sigma'], line_width=2,
-               color=color, legend=label)
+        p1.line(df['m_DM'], df['sigma'], line_width=2,color=color, legend=label)
+        p2.line(df['m_DM'], df['sigma'], line_width=2,color=color, legend=label)
 
     all_data = pd.concat(dfs)
 
-    script, div = components(p, CDN)
-    return render_template('index.html', plot_script=script, plot_div=div,
+    script1, div1 = components(p1, CDN)
+    script2, div2 = components(p2, CDN)
+    return render_template('index.html',
+                           plot_script1=script1, plot_div1=div1,
+                           plot_script2=script2, plot_div2=div2,
                            bokeh_version=bokeh.__version__,
                            data_table=all_data.to_html(),
                            datasets = known_datasets,
@@ -146,7 +160,9 @@ def pdf():
 
     script, div = components(p, CDN)
     #ToDo: Turn this render_template into a PDF file and download
-    return render_template('pdf.html', plot_script=script, plot_div=div,
+    return render_template('pdf.html',
+                           plot_script1=script1, plot_div1=div1,
+                           plot_script2=script2, plot_div2=div2,
                            bokeh_version=bokeh.__version__,
                            data_table=all_data.to_html(),
                            metadata = metadata,

@@ -60,8 +60,11 @@
 		  }
 	</script>
 	<!-- plot -->
-	{% if plot_script %}
-		{{ plot_script | safe}}
+	{% if plot_script1 %}
+		{{ plot_script1 | safe}}
+	{% endif %}
+	{% if plot_script2 %}
+		{{ plot_script2 | safe}}
 	{% endif %}
 </head>
 
@@ -273,13 +276,16 @@
 
 <div class="datainput">
 			<div class="row">
-				<div class="col"></div>
-				<div class="col justify-content-center">
-					{% if plot_div is defined %}
-						{{ plot_div | safe }}
+				<div class="col justify-content-right">
+					{% if plot_div1 is defined %}
+						{{ plot_div1 | safe }}
 					{% endif %}
 				</div>
-				<div class="col"></div>
+				<div class="col justify-content-left">
+					{% if plot_div2 is defined %}
+						{{ plot_div2 | safe }}
+					{% endif %}
+				</div>
 			</div>
 			<hr>
 	<div class="row justify-content-start" style="margin-top:5%;">
