@@ -6,7 +6,7 @@ oauth==1.0.1
 oauthlib==2.0.2
 requests==2.7.0
 simplejson==3.10.0
-bokeh==0.12.5
+bokeh==0.12.14
 WTForms==2.1
 Flask-WTF==0.14.2
 pandas==0.20.3

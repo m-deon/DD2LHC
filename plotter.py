@@ -169,8 +169,10 @@ def get_data(dataset,modifier=''):
 
     #convert
     if dataset_type == 'DD':
+        df['type']='DD'
         dd2lhc(df)
     elif dataset_type == 'LHC':
+        df['type']='LHC'
         if spinDependency == 'SD':
             lhc2dd_SD(df,modifier if modifier else sd_modifier)
         else:
@@ -179,13 +181,13 @@ def get_data(dataset,modifier=''):
         #note, not sure if appending in this fashion is the best way to extrapolate and expand the dataframe
         extrap_mdm = range(1, int(min(df['m_DM'])))
         extrap_sigma = np.repeat(min(df['sigma']), len(extrap_mdm))
-        extrap_df = pd.DataFrame({'label':label,'m_DM':extrap_mdm,'sigma':extrap_sigma})
+        extrap_df = pd.DataFrame({'label':label,'m_DM':extrap_mdm,'sigma':extrap_sigma,'type':'LHC'})
         df = df.append(extrap_df)
 
     #Print Data to Verify
-    #pd.options.display.max_rows = 5
-    #pd.set_option('expand_frame_repr',False)
-    #print(df)
+    pd.options.display.max_rows = 5
+    pd.set_option('expand_frame_repr',False)
+    print(df)
     return df
 
 def get_figure(df):
