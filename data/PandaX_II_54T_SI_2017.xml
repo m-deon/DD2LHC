@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<limit>
+  <data-comment>54 ton-day, SI 90% CL</data-comment>
+  <data-label>PandaX 54 ton-day, 2017</data-label>
+  <data-reference>Dark Matter Results from 54-Ton-Day Exposure of PandaX-II Experiment 
+</data-reference>
+  <data-values>{[5.01187 8.09215e-43; 6.30957 6.03411e-44; 7.94328 9.93764e-45; 10 2.31167e-45; 12.5893 7.91234e-46; 15.8489 3.44612e-46; 19.9526 1.8137e-46; 25.1189 1.2247e-46; 31.6228 9.80982e-47; 39.8107 8.58189e-47
+; 50.1187 8.82249e-47; 63.0957 9.34867e-47; 79.4328 1.0801e-46; 100 1.26267e-46; 125.893 1.56569e-46; 158.489 1.87179e-46; 199.526 2.21414e-46; 251.189 2.76256e-46; 316.228 3.477e-46; 398.107 4.44803e-46; 501.187 5.74179e-46; 630.957 7.08726e-46; 794.328 8.77894e-46; 1000 1.12162e-45
+; 1995.26 2.14585e-45; 5011.87 5.1769e-45; 10000 1.09341e-44; 100000 1.06783e-43]}</data-values>
+  <date-of-announcement type="date" nil="true"></date-of-announcement>
+  <date-of-run-end type="date" nil="true"></date-of-run-end>
+  <date-of-run-start type="date" nil="true"></date-of-run-start>
+  <default-color>Blk</default-color>
+  <default-style>Line</default-style>
+  <experiment>PandaX</experiment>
+  <measurement-type>Dir</measurement-type>
+  <nomhash type="yaml">--- 
+pauser: false
+</nomhash>
+  <public type="boolean">true</public>
+  <result-type>Exp</result-type>
+  <spin-dependency>SI</spin-dependency>
+  <x-rescale>1</x-rescale>
+  <x-units>GeV</x-units>
+  <y-rescale>1</y-rescale>
+  <y-units>cm^2</y-units>
+  <year type="integer">2017</year>
+</limit>
