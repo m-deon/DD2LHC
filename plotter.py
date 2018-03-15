@@ -65,8 +65,7 @@ def dd2lhc(df):
     df['sigma_in_GeV'] = df['sigma'] * conv_units
 
     # calculate m_mediator
-    df['m_med'] = np.power(f * df['mu_nDM'], 0.5) / \
-        np.power(math.pi * df['sigma'] / 3., 0.25)
+    df['m_med'] = np.power(f * df['mu_nDM'], 0.5) / np.power(math.pi * df['sigma_in_GeV'] / 3., 0.25)
 
 
 def lhc2dd_SD(df,modifier='proton'):
@@ -202,18 +201,49 @@ def get_figure(df):
     return fig
 #    fig.savefig('pico2plane2.png')
 
-def make_plot(coupling, df_lhc, name_only, df_dd):
+def make_plot(title, df_lhc, file_name, df_dd):
     import matplotlib.pyplot as plt
-    plt.title(coupling + ": CMS & LUX (LHC2DD)")
-    plt.plot(df_lhc['m_DM'],df_lhc['sigma'], 'k-', linewidth=3, color="#0165fc", label=name_only)
-    plt.plot(df_dd['m_DM'], df_dd['sigma'], 'k-', linewidth=3, color="purple", label="LUX")
+    plt.title(title)
+    plt.plot(df_lhc['m_DM'],df_lhc['sigma'], 'k-', linewidth=3, color="#0165fc", label=df_lhc['label'].any())
+    plt.plot(df_dd['m_DM'], df_dd['sigma'], 'k-', linewidth=3, color="purple", label=df_dd['label'].any())
     plt.ylabel("$ \sigma_{DM}$ (cross-section)")
     plt.xlabel("mDM")
     plt.yscale("log")
     plt.xscale("log")
     plt.grid(True)
     plt.legend(loc=1, ncol=1, borderaxespad=0.0, prop={'size': 9})
-    plt.savefig(name_only + ".pdf")
+    plt.savefig(file_name + ".pdf")
+    plt.close()
+    return
+
+def make_plot_dd(title, df_lhc, file_name, df_dd):
+    import matplotlib.pyplot as plt
+    plt.title(title)
+    plt.plot(df_lhc['m_med'],df_lhc['m_DM'], 'k-', linewidth=3, color="#0165fc", label=df_lhc['label'].any())
+    plt.plot(df_dd['m_med'], df_dd['m_DM'], 'k-', linewidth=3, color="purple", label=df_dd['label'].any())
+    plt.ylabel("m_DM")
+    plt.xlabel("m_med")
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.grid(True)
+    plt.legend(loc=1, ncol=1, borderaxespad=0.0, prop={'size': 9})
+    plt.savefig(file_name + ".pdf")
+    plt.close()
+    return
+
+def make_plot_dd2(title, df_lhc, file_name, df_dd, df_dd2):
+    import matplotlib.pyplot as plt
+    plt.title(title)
+    plt.plot(df_lhc['m_med'],df_lhc['m_DM'], 'k-', linewidth=3, color="#0165fc", label=df_lhc['label'].any())
+    plt.plot(df_dd['m_med'], df_dd['m_DM'], 'k-', linewidth=3, color="purple", label=df_dd['label'].any())
+    plt.plot(df_dd2['m_med'], df_dd2['m_DM'], 'k-', linewidth=3, color="green", label=df_dd2['label'].any())
+    plt.ylabel("m_DM")
+    plt.xlabel("m_med")
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.grid(True)
+    plt.legend(loc=1, ncol=1, borderaxespad=0.0, prop={'size': 9})
+    plt.savefig(file_name + ".pdf")
     plt.close()
     return
 
@@ -226,7 +256,10 @@ if __name__ == '__main__':
     dd_df2 = get_data('LUX_2016_SD_p')
     dd_df3 = get_data('LUX_2016_SD_n')
 
-    make_plot("Vector",lhc_df1,"VEC_MESS5_jc",dd_df1)
-    make_plot("Scalar",lhc_df2,"lhc_scalar5_jc",dd_df1)
-    make_plot("Proton",lhc_df3,"lhc_axialp5_jc",dd_df2)
-    make_plot("Neuton",lhc_df4,"lhc_axialn5_jc",dd_df3)
+    #make_plot("Vector",lhc_df1,"VEC_MESS5_jc",dd_df1)
+    #make_plot("Scalar",lhc_df2,"lhc_scalar5_jc",dd_df1)
+    #make_plot("Proton",lhc_df3,"lhc_axialp5_jc",dd_df2)
+    #make_plot("Neuton",lhc_df4,"lhc_axialn5_jc",dd_df3)
+
+    make_plot_dd("DD Plot",lhc_df4,"DD Plot",dd_df3)
+    make_plot_dd2("DD Plot",lhc_df4,"DD Plot2",dd_df3,dd_df2)
