@@ -78,7 +78,7 @@ def index():
     colors = cycle(['red', 'blue', 'green', 'orange'])
 
     p1 = figure(
-        title='DD Results',
+        title='Simplified Model Plane',
         tools='wheel_zoom, pan, save',
         x_axis_label='mMed',
         x_axis_type="log",
@@ -92,7 +92,7 @@ def index():
     p1.yaxis.axis_label_text_font_size = "14pt"
 
     p2 = figure(
-        title='Collider Conversion',
+        title='Direct Detection Plane',
         tools='wheel_zoom, pan, save',
         x_axis_label='mDM',
         x_axis_type="log",
