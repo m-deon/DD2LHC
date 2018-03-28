@@ -28,6 +28,9 @@ fTG=1-fup-fdp-fsp
 DATA_LOCATION = 'data/'
 DATA_FILE_EXT = '.xml'
 
+dd_exp_list = ['lux', 'zeplin', 'xenon', 'icecube', 'pico', 'crest', 'darkside', 'cdms', 'panda']
+collider_exp_list = ['lhc', 'atlas', 'cms']
+
 
 def dataset_names():
     datasets = glob('data/*.xml')
@@ -132,6 +135,16 @@ def get_metadata(dataset):
     #print (metadata)
     return metadata
 
+def parseExperimentType(experiment):
+    dataset_type, names = '',''
+    if any(exp in experiment.lower() for exp in dd_exp_list):
+            dataset_type = 'DD'
+            names = ['m_DM', 'sigma']
+    elif any(exp in experiment.lower() for exp in collider_exp_list):
+            dataset_type = 'LHC'
+            names = ['m_med', 'm_DM']
+    return dataset_type, names
+
 def get_data(dataset,modifier=''):
 
     input_file = os.path.join(DATA_LOCATION, dataset + DATA_FILE_EXT)
@@ -149,13 +162,9 @@ def get_data(dataset,modifier=''):
     rawData = dataValues.replace("{[","").replace("]}","").replace("\n","")
     data = StringIO(rawData)
 
-    #Determine data type
-    if experiment == 'LUX-ZEPLIN' or experiment == 'LUX':
-        dataset_type = 'DD'
-        names = ['m_DM', 'sigma']
-    else:
-        dataset_type = 'LHC'
-        names = ['m_med', 'm_DM']
+    dataset_type, names = parseExperimentType(experiment)
+    if(dataset_type == ''):
+        return None
 
     #parse
     df = pd.read_csv(data, delim_whitespace=True, lineterminator=';', names=names)
@@ -187,7 +196,7 @@ def get_data(dataset,modifier=''):
     #Print Data to Verify
     pd.options.display.max_rows = 5
     pd.set_option('expand_frame_repr',False)
-    print(df)
+    #print(df)
     return df
 
 def get_figure(df):
@@ -261,6 +270,6 @@ if __name__ == '__main__':
     #make_plot("Scalar",lhc_df2,"lhc_scalar5_jc",dd_df1)
     #make_plot("Proton",lhc_df3,"lhc_axialp5_jc",dd_df2)
     #make_plot("Neuton",lhc_df4,"lhc_axialn5_jc",dd_df3)
-
-    make_plot_dd("DD Plot",lhc_df4,"DD Plot",dd_df3)
-    make_plot_dd2("DD Plot",lhc_df4,"DD Plot2",dd_df3,dd_df2)
+    #make_plot("Test",lhc_df1,"Test",dd_df1)
+    #make_plot_dd("DD Plot",lhc_df4,"DD Plot",dd_df3)
+    #make_plot_dd2("DD Plot2",lhc_df4,"DD Plot2",dd_df3,dd_df2)

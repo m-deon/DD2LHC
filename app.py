@@ -25,6 +25,11 @@ app.secret_key = 's3cr3t'
 #Default
 selected_datasets = ['LUX_2016_SI', 'CMS_monojet_July2017_VECTOR']
 
+def determine(data):
+    if data is None:
+        return False;
+    else:
+        return True;
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -72,8 +77,12 @@ def index():
 
     datasets = selected_datasets
     dfs = map(get_data, datasets)
+
+    #Filter, TODO: Apply filter to selected_datasets prior to conversion (attempt)
+    #get_data will return a 'None' object if the selected dataset could not be converted, (bad experiement string..)
+    dfs = [x for x in dfs if determine(x)]
+
     metadata = map(get_metadata, datasets)
-    metadata2 = map(get_metadata, datasets)
     allmetadata = map (get_metadata,known_datasets)
     colors = cycle(['red', 'blue', 'green', 'orange'])
 
@@ -110,14 +119,11 @@ def index():
         label = df['label'].any()
         p1.line(df['m_med'], df['m_DM'], line_width=2, color=color, legend=label)
         p2.line(df['m_DM'], df['sigma'], line_width=2, color=color, legend=label)
-        '''
-        if(df['type'].any()=='DD'):
-            p1.line(df['m_med'], df['m_DM'], line_width=2, color=color, legend=label)
-        elif(df['type'].any()=='LHC'):
-            p2.line(df['m_DM'], df['sigma'], line_width=2, color=color, legend=label)
-        '''
 
-    all_data = pd.concat(dfs)
+    #Initialize all_data in the case that all datasets selected where invalid
+    all_data = pd.DataFrame()
+    if(len(dfs) > 0):
+        all_data = pd.concat(dfs)
 
     script1, div1 = components(p1, CDN)
     script2, div2 = components(p2, CDN)
