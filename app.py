@@ -71,6 +71,19 @@ def getDDPlot():
     plot.yaxis.axis_label_text_font_size = "14pt"
     return plot
 
+def getLegendPlot():
+    legendPlot = figure(
+        plot_width=500,
+        plot_height=250,
+        tools="",
+        toolbar_location=None
+    )
+    legendPlot.axis.visible = False
+    legendPlot.xgrid.visible = False
+    legendPlot.ygrid.visible = False
+    legendPlot.outline_line_color = None
+    return legendPlot
+
 @app.route('/')
 def main():
     return redirect('/index')
@@ -123,12 +136,7 @@ def index():
 
     p1 = getSimplifiedPlot()
     p2 = getDDPlot()
-    legendPlot = figure(
-        plot_width=500,
-        plot_height=250,
-        tools="",
-        toolbar_location=None
-    )
+    legendPlot = getLegendPlot()
 
     legendItems = []
     x = 1
@@ -140,11 +148,6 @@ def index():
         p2.line(df['m_DM'], df['sigma'], line_width=2, color=color)
         line = legendPlot.line(x,y,line_width=2, color=color)
         legendItems.append((label,[line]))
-        #legend = Legend(items=[(label , [line])], location=(0, -30))
-
-
-    for data, color in zip(metadata, colors):
-        data['color'] = color
 
     #Initialize all_data in the case that all datasets selected where invalid
     all_data = pd.DataFrame()
@@ -152,15 +155,7 @@ def index():
         all_data = pd.concat(dfs)
 
     legend = Legend(items=legendItems, location=(0, 0))
-
-    legendPlot.axis.visible = False
     legendPlot.add_layout(legend, 'above')
-    legendPlot.xgrid.visible = False
-    legendPlot.ygrid.visible = False
-    legendPlot.outline_line_color = None
-
-
-
 
     script1, div1 = components(p1, CDN)
     script2, div2 = components(p2, CDN)
@@ -184,6 +179,7 @@ def index():
 @app.route('/pdf', methods=['GET', 'POST'])
 def pdf():
     gu, gd, gs = get_gSM()
+    si_modifier = get_SI_modifier()
 
     global selected_datasets
     #Will re-use the previously selected values for the dataset
@@ -199,23 +195,39 @@ def pdf():
 
     p1 = getSimplifiedPlot()
     p2 = getDDPlot()
+    legendPlot = getLegendPlot()
 
+    legendItems = []
+    x = 1
+    y = 2*x
     for df, color in zip(dfs, colors):
         label = df['label'].any()
         df['color'] = color
-        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color, legend=label)
-        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color, legend=label)
+        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color)
+        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color)
+        line = legendPlot.line(x,y,line_width=2, color=color)
+        legendItems.append((label,[line]))
 
-    all_data = pd.concat(dfs)
+    #Initialize all_data in the case that all datasets selected where invalid
+    all_data = pd.DataFrame()
+    if(len(dfs) > 0):
+        all_data = pd.concat(dfs)
 
-    script, div = components(p, CDN)
+    legend = Legend(items=legendItems, location=(0, 0))
+    legendPlot.add_layout(legend, 'above')
+
+    script1, div1 = components(p1, CDN)
+    script2, div2 = components(p2, CDN)
+    script3, div3 = components(legendPlot,CDN)
     #ToDo: Turn this render_template into a PDF file and download
     return render_template('pdf.html',
                            plot_script1=script1, plot_div1=div1,
                            plot_script2=script2, plot_div2=div2,
+                           plot_script3=script3, plot_div3=div3,
                            bokeh_version=bokeh.__version__,
                            data_table=all_data.to_html(),
                            metadata = metadata,
+                           si_modifier = si_modifier,
                            gSM_gSM=gu)
 
 
