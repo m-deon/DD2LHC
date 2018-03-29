@@ -66,6 +66,9 @@
 	{% if plot_script2 %}
 		{{ plot_script2 | safe}}
 	{% endif %}
+	{% if plot_script3 %}
+		{{ plot_script3 | safe}}
+	{% endif %}
 </head>
 
 <body class="bg-light text-dark">
@@ -287,6 +290,15 @@
 					{% endif %}
 				</div>
 			</div>
+
+			<div class="row">
+				<div class="col justify-content-left">
+					{% if plot_div3 is defined %}
+						{{ plot_div3 | safe }}
+					{% endif %}
+				</div>
+				<div class="col"></div>
+			</div>
 			<hr>
 	<div class="row justify-content-start" style="margin-top:5%;">
 		<div class="col">
@@ -308,7 +320,6 @@
 				<div class='col col-2'>Reference:</div>
 				<div class='col'>{{data['dataReference'] | safe}}</div>
 			</div>
-
 			<hr>
 			{% endfor %}
 		</div>

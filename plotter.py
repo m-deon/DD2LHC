@@ -266,6 +266,17 @@ if __name__ == '__main__':
     dd_df2 = get_data('LUX_2016_SD_p')
     dd_df3 = get_data('LUX_2016_SD_n')
 
+    #Output converted data to csv
+    #lhc_df1.to_csv('test/CMS_monojet_July2017_VECTOR_Vector.csv', sep=',')
+    #lhc_df2.to_csv('test/CMS_monojet_July2017_VECTOR_Scalar.csv', sep=',')
+    #lhc_df3.to_csv('test/CMS_monojet_July2017_AXIAL_3_Proton.csv', sep=',')
+    #lhc_df4.to_csv('test/CMS_monojet_July2017_AXIAL_3_Neutron.csv', sep=',')
+    #dd_df1.to_csv('test/LUX_2016_SI.csv', sep=',')
+    #dd_df2.to_csv('test/LUX_2016_SD_p.csv', sep=',')
+    #dd_df3.to_csv('test/LUX_2016_SD_n.csv', sep=',')
+
+    #Generate plots and save to Pdf
+    #Note: This plot generated is a Matlab plot, where the web interface uses Bokeh
     #make_plot("Vector",lhc_df1,"VEC_MESS5_jc",dd_df1)
     #make_plot("Scalar",lhc_df2,"lhc_scalar5_jc",dd_df1)
     #make_plot("Proton",lhc_df3,"lhc_axialp5_jc",dd_df2)

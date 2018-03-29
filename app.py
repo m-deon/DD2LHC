@@ -7,7 +7,7 @@ from werkzeug.datastructures import CombinedMultiDict
 from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.embed import components
-from bokeh.models import LinearAxis, Label
+from bokeh.models import LinearAxis, Label, Legend
 import bokeh
 import pandas as pd
 from flask import send_from_directory
@@ -24,6 +24,7 @@ app.secret_key = 's3cr3t'
 
 #Default
 selected_datasets = ['LUX_2016_SI', 'CMS_monojet_July2017_VECTOR']
+colors = cycle(['red', 'blue', 'green', 'orange'])
 
 def determine(data):
     if data is None:
@@ -34,6 +35,41 @@ def determine(data):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def getSimplifiedPlot():
+    plot = figure(
+        title='Simplified Model Plane',
+        tools='wheel_zoom, pan, save',
+        toolbar_location="above",
+        x_axis_label='mMed',
+        x_axis_type="log",
+        y_axis_label="mDM",
+        y_axis_type="log",
+        plot_width=500,
+        plot_height=500,
+    )
+    plot.title.text_font_size = "1.2em"
+    plot.xaxis.axis_label_text_font_size = "14pt"
+    plot.yaxis.axis_label_text_font_size = "14pt"
+    return plot
+
+def getDDPlot():
+    plot = figure(
+        title='Direct Detection Plane',
+        tools='wheel_zoom, pan, save',
+        toolbar_location="above",
+        x_axis_label='mDM',
+        x_axis_type="log",
+        #y_axis_label="$\sigma_{DM}$ (cross-section)",
+        y_axis_label="σDM (cross-section)",
+        y_axis_type="log",
+        plot_width=500,
+        plot_height=500,
+    )
+    plot.title.text_font_size = "1.2em"
+    plot.xaxis.axis_label_text_font_size = "14pt"
+    plot.yaxis.axis_label_text_font_size = "14pt"
+    return plot
 
 @app.route('/')
 def main():
@@ -84,52 +120,55 @@ def index():
 
     metadata = map(get_metadata, datasets)
     allmetadata = map (get_metadata,known_datasets)
-    colors = cycle(['red', 'blue', 'green', 'orange'])
 
-    p1 = figure(
-        title='Simplified Model Plane',
-        tools='wheel_zoom, pan, save',
-        x_axis_label='mMed',
-        x_axis_type="log",
-        y_axis_label="mDM",
-        y_axis_type="log",
+    p1 = getSimplifiedPlot()
+    p2 = getDDPlot()
+    legendPlot = figure(
         plot_width=500,
-        plot_height=500,
+        plot_height=250,
+        tools="",
+        toolbar_location=None
     )
-    p1.title.text_font_size = "1.2em"
-    p1.xaxis.axis_label_text_font_size = "14pt"
-    p1.yaxis.axis_label_text_font_size = "14pt"
 
-    p2 = figure(
-        title='Direct Detection Plane',
-        tools='wheel_zoom, pan, save',
-        x_axis_label='mDM',
-        x_axis_type="log",
-        #y_axis_label="$\sigma_{DM}$ (cross-section)",
-        y_axis_label="σDM (cross-section)",
-        y_axis_type="log",
-        plot_width=500,
-        plot_height=500,
-    )
-    p2.title.text_font_size = "1.2em"
-    p2.xaxis.axis_label_text_font_size = "14pt"
-    p2.yaxis.axis_label_text_font_size = "14pt"
-
+    legendItems = []
+    x = 1
+    y = 2*x
     for df, color in zip(dfs, colors):
         label = df['label'].any()
-        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color, legend=label)
-        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color, legend=label)
+        df['color'] = color
+        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color)
+        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color)
+        line = legendPlot.line(x,y,line_width=2, color=color)
+        legendItems.append((label,[line]))
+        #legend = Legend(items=[(label , [line])], location=(0, -30))
+
+
+    for data, color in zip(metadata, colors):
+        data['color'] = color
 
     #Initialize all_data in the case that all datasets selected where invalid
     all_data = pd.DataFrame()
     if(len(dfs) > 0):
         all_data = pd.concat(dfs)
 
+    legend = Legend(items=legendItems, location=(0, 0))
+
+    legendPlot.axis.visible = False
+    legendPlot.add_layout(legend, 'above')
+    legendPlot.xgrid.visible = False
+    legendPlot.ygrid.visible = False
+    legendPlot.outline_line_color = None
+
+
+
+
     script1, div1 = components(p1, CDN)
     script2, div2 = components(p2, CDN)
+    script3, div3 = components(legendPlot,CDN)
     return render_template('index.html',
                            plot_script1=script1, plot_div1=div1,
                            plot_script2=script2, plot_div2=div2,
+                           plot_script3=script3, plot_div3=div3,
                            bokeh_version=bokeh.__version__,
                            data_table=all_data.to_html(),
                            datasets = known_datasets,
@@ -155,23 +194,17 @@ def pdf():
     datasets = selected_datasets
 
     dfs = map(get_data, datasets)
+    dfs = [x for x in dfs if determine(x)]
     metadata = map(get_metadata, datasets)
 
-    colors = cycle(['red', 'blue', 'green', 'orange'])
-    p = figure(
-        title='DD2LHC Pico (p, axial)',
-        tools='wheel_zoom, pan, save',
-        x_axis_label='m_DM',
-        x_axis_type="log",
-        y_axis_label='sigma',
-        y_axis_type="log",
-        plot_width=600,
-        plot_height=600,
-    )
+    p1 = getSimplifiedPlot()
+    p2 = getDDPlot()
 
     for df, color in zip(dfs, colors):
-        p.line(df['m_DM'], df['sigma'], line_width=2,
-               color=color, legend=df['label'][0])
+        label = df['label'].any()
+        df['color'] = color
+        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color, legend=label)
+        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color, legend=label)
 
     all_data = pd.concat(dfs)
 
