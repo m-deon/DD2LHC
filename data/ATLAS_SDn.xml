@@ -12,6 +12,7 @@
   <default-color>Blk</default-color>
   <default-style>Line</default-style>
   <experiment>LHC</experiment>
+  <isDD>1</isDD>
   <measurement-type>Dir</measurement-type>
   <nomhash type="yaml">--- 
 pauser: false
