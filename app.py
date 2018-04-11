@@ -13,7 +13,7 @@ import pandas as pd
 from flask import send_from_directory
 import numpy as np
 
-from plotter import get_figure, get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM, set_SI_modifier, get_SI_modifier
+from plotter import get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM, set_SI_modifier, get_SI_modifier
 from forms import DatasetForm, UploadForm, Set_gSM_Form
 
 ALLOWED_EXTENSIONS = set(['xml'])

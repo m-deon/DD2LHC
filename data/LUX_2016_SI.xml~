@@ -10,7 +10,6 @@
   <default-color>Blk</default-color>
   <default-style>Line</default-style>
   <experiment>LUX</experiment>
-  <dataformat>DD</dataformat>
   <measurement-type>Dir</measurement-type>
   <nomhash type="yaml">--- 
 mdutra: false
