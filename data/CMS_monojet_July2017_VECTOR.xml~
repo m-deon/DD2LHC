@@ -88,7 +88,6 @@
   <default-color>Blk</default-color>
   <default-style>Line</default-style>
   <experiment>CMS</experiment>
-  <dataformat>LHC</dataformat>
   <measurement-type>Dir</measurement-type>
   <public type="boolean">true</public>
   <result-type>Exp</result-type>
