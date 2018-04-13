@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<limit>
+  <data-comment>First spin-independent WIMP search results from XENON1T</data-comment>
+  <data-label>XENON1T First DM Results</data-label>
+  <data-reference>Aprile, et al., Phys. Rev. Lett. 119, 181301 (2017), arXiv:1705.06655</data-reference>
+  <data-values>{[6 153.706536966968; 7 32.1228499825119; 8 10.0058201207294; 9 4.0694748214326; 10 2.00414561703358; 12 0.718466209779487; 15 0.279380636799589; 20 0.12718768460434; 30 0.079284618559011; 40 0.077230826505347; 50 0.083684273928471; 70 0.101818712674102; 100 0.134261059624927; 120 0.158000808029976; 150 0.195760922343171; 200 0.260412620273414; 400 0.52; 1000 1.3; 2000 2.6; 3000 3.9; 5000 6.5; 7000 9.1; 10000 13]}</data-values>
+  <date-of-announcement type="date" nil="true"></date-of-announcement>
+  <date-of-run-end type="date" nil="true"></date-of-run-end>
+  <date-of-run-start type="date" nil="true"></date-of-run-start>
+  <default-color>Blk</default-color>
+  <default-style>Line</default-style>
+  <experiment>XENON1T</experiment>
+  <dataformat>DD</dataformat>
+  <measurement-type>Dir</measurement-type>
+  <nomhash type="yaml">--- 
+tangyilei: true
+pauser: false
+mnsckm: true
+</nomhash>
+  <public type="boolean">true</public>
+  <result-type>Exp</result-type>
+  <spin-dependency>SI</spin-dependency>
+  <x-rescale>1</x-rescale>
+  <x-units>GeV</x-units>
+  <y-rescale>1e-45</y-rescale>
+  <y-units>cm^2</y-units>
+  <year type="integer">2017</year>
+</limit>
