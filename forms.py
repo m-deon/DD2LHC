@@ -8,7 +8,7 @@ class DatasetForm(FlaskForm):
     select = SubmitField('Plot Data')
     gSM_input = FloatField('gSM_input')
     conditional_input = RadioField(u'Data Type', choices=[(u'SD', 'Spin-Dependent'), (u'SI', 'Spin-Independent')], validators=[validators.Optional()])
-    radio_inputSI = RadioField(u'Spin-Independent', choices=[('vector', 'Vector'), ('scalar', 'Scalar')], default='vector',validators=[validators.Optional()])
+    radio_inputSI = RadioField(u'Spin-Independent', choices=[('scalar', 'Scalar'), ('vector', 'Vector')], default='scalar',validators=[validators.Optional()])
     datasets = SelectMultipleField('datasets', choices=[], validators=[validators.DataRequired()])
     #gSM_input = FloatField('gSM_input')
     #conditional_input = RadioField(u'Conditional Type', choices=[('SD', 'Spin-Dependent'), ('SI', 'Spin-Independent')])
