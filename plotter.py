@@ -215,8 +215,10 @@ def get_data(dataset,modifier=''):
         df['type']='LHC'
         if spinDependency == 'SD':
             lhc2dd_SD(df,modifier if modifier else sd_modifier)
-        else:
+        elif spinDependency == 'SI':
             lhc2dd_SI(df,modifier if modifier else si_modifier)
+        else:
+            return None
         #extrapolate LHC Data
         #note, not sure if appending in this fashion is the best way to extrapolate and expand the dataframe
         extrap_mdm = range(1, int(min(df['m_DM'])))
