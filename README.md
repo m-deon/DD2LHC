@@ -20,3 +20,10 @@ python app.py
 #for Heroku:
 In order go get plots on heroku, before deploying the first time go to in Heroku to 'settings' app and add the following buildpack:
 https://github.com/kennethreitz/conda-buildpack.git
+
+
+#for Docker:
+heroku plugins:install heroku-container-registry
+heroku container:login
+heroku create
+heroku container:push web
