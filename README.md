@@ -16,3 +16,7 @@ To run locally:
 source activate dd2lhc #if in new session
 python app.py
 ```
+
+#for Heroku:
+In order go get plots on heroku, before deploying the first time go to in Heroku to 'settings' app and add the following buildpack:
+https://github.com/kennethreitz/conda-buildpack.git
