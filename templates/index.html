@@ -20,46 +20,17 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 	<script type="text/javascript">
-		  window.onload = function() {
-		    var dataBtn = document.getElementById("showData");
-				var pdfBtn = document.getElementById("downloadPDF");
-		    dataBtn.onclick = function() {
-					var data = document.getElementById("dataDiv");
-					data.style.display = "block";
-					return false;
-		    }
-				pdfBtn.onclick = function() {
-					//redirect to pdf.html with selected datasets
-					//window.location.href = "{{ url_for('pdf') }}";
-					post('/pdf', {name: 'Donnie Darko'});
-					return false;
-				}
-				function post(path, params, method) {
-			    method = method || "post"; // Set method to post by default if not specified.
-
-			    // The rest of this code assumes you are not using a library.
-			    // It can be made less wordy if you use one.
-			    var form = document.createElement("form");
-			    form.setAttribute("method", method);
-			    form.setAttribute("action", path);
-
-			    for(var key in params) {
-			        if(params.hasOwnProperty(key)) {
-			            var hiddenField = document.createElement("input");
-			            hiddenField.setAttribute("type", "hidden");
-			            hiddenField.setAttribute("name", key);
-			            hiddenField.setAttribute("value", params[key]);
-
-			            form.appendChild(hiddenField);
-			        }
-			    }
-
-			    document.body.appendChild(form);
-			    form.submit();
-				}
-		  }
+			//Collect all the flask variables for use in the main js script
+		  var selected_datasets_js = {{selected_datasets|tojson}};
+			var metadata = [];
+			{% for data in allmetadata  %}
+			metadata.push({{data|tojson}});
+			{% endfor %}
+			var plots = {{savedPlots|tojson}};
 	</script>
-	<!-- plot -->
+	<script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
+
+	<!-- plot  scripts-->
 	{% if plot_script1 %}
 		{{ plot_script1 | safe}}
 	{% endif %}
@@ -72,103 +43,6 @@
 </head>
 
 <body class="bg-light text-dark">
-	<script type="text/javascript">
-	function displayMetadata(form){
-		//Parse all metadata from flask into data structure
-		var metadata = [];
-		{% for data in allmetadata  %}
-		metadata.push({{data|tojson}});
-		{% endfor %}
-		//Generate the new metadata to display, depending if item is selected
-		var displayText = "";
-		for (i=0; i<form.options.length; i=i+1) {
-    if (form.options[i].selected ) {
-				displayText += getMetadataDisplay(metadata[i]);
-    	}
-		}
-		//Push the text to the html element
-		var textElement = document.getElementById('datasetInfo');
-		textElement.innerHTML = displayText;
-	}
-	function getMetadataDisplay(metadata){
-		var displayText = "";
-		displayText += "<div class='row'>";
-		displayText += "<div class='col col-2'>";
-		displayText += "Filename:";
-		displayText += "</div>";
-		displayText += "<div class='col'>";
-		displayText += metadata['fileName'];
-		displayText += "</div>";
-		displayText += "</div>";
-
-		displayText += "<div class='row'>";
-		displayText += "<div class='col col-2'>";
-		displayText += "Label:";
-		displayText += "</div>";
-		displayText += "<div class='col'>";
-		displayText += metadata['dataLabel'];
-		displayText += "</div>";
-		displayText += "</div>";
-
-		displayText += "<div class='row'>";
-		displayText += "<div class='col col-2'>";
-		displayText += "Comment:";
-		displayText += "</div>";
-		displayText += "<div class='col'>";
-		displayText += metadata['dataComment'];
-		displayText += "</div>";
-		displayText += "</div>";
-		displayText = displayText + '<hr>';
-		return displayText;
-	}
-	function updateConditionalSelect(conditionalSelect){
-		var selectedInput = "";
-		var inputs = document.getElementsByName("conditional_input");
-		for (var i = 0, length = inputs.length; i < length; i++) {
- 			if (inputs[i].checked) {
-  			// do whatever you want with the checked radio
-  			selectedInput = inputs[i].value;
-				// only one radio can be logically checked, don't check the rest
-  			break;
- 			}
-		}
-
-		//Parse all metadata from flask into data structure
-		var metadata = [];
-		{% for data in allmetadata  %}
-		metadata.push({{data|tojson}});
-		{% endfor %}
-
-		var form = document.getElementById("datasets");
-		for (i=0; i<form.options.length; i=i+1) {
-			var meta = metadata[i];
-			//If this meta matches the selected input, then we select in form
-			form.options[i].selected = false; //Deselect previous selction
-			if(meta['spinDependency'] === selectedInput){
-				form.options[i].selected = true;
-			}
-		}
-		//Now make sure the metadata is correct
-		displayMetadata(form);
-	}
-	</script>
-
-	<!--
-	<nav class="navbar navbar-expand-md" style="background-color:white;">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg justify-content-start">
-					<img id="headerLogo" src="{{ url_for('static', filename='img/brandeis.png') }}">
-					<br>
-					<a class="btn btn-outline-primary" href="http://www.brandeis.edu/departments/physics/">Brandeis University - Center for the Dark Universe</a>
-				</div>
-				<div class="col justify-content-end" style="text-align:right">
-					<img id="dmLogo" src="{{ url_for('static', filename='img/darkmatter.jpg') }}"/>
-				</div>
-			</div>
-		</div>
-	</nav>
--->
 	<nav class="navbar navbar-expand-md bg-primary navbar-dark" style="text-align:right">
 		<div class="container">
 			<div class="row">
@@ -209,7 +83,6 @@
   			<li>Create comparison plot</li>
   			<li>Download PDF for publications.</li>
   			<li>Use XXX to cite us</li>
-				<li>TOOL VERY PRELIMINARY YET</li>
   		</ul>
   	</div>
 		<div class="col justify-content-end">
@@ -240,6 +113,9 @@
 		<div class="col justify-content-end">
 			<h3>Conditionally Select Datasets:</h3>
 				{{dataset_selection.conditional_input(**{"onchange":"updateConditionalSelect(this)"}) }}
+				<h3>Saved Plots:</h3>
+				{{ dataset_selection.hidden_tag() }}
+				{{ dataset_selection.savedPlots(class="selectpicker",**{"onchange":"selectPlots(this)"}) }}
 		</div>
 
 	</div>
@@ -259,6 +135,7 @@
 	</div>
 </div>
 </form>
+
 	<hr>
 
 	<div class="row justify-content-start">
@@ -297,7 +174,11 @@
 						{{ plot_div3 | safe }}
 					{% endif %}
 				</div>
-				<div class="col"></div>
+				<div class="col">
+					<a id="showData" href="#" class="btn btn-outline-primary plotBtn">Show Data</a><br>
+					<a id="savePlots" href="#" class="btn btn-outline-primary plotBtn">Save Plots</a><br>
+					<a id="downloadPDF" href="#" class="btn btn-outline-primary plotBtn">Download PDF</a>
+				</div>
 			</div>
 			<hr>
 	<div class="row justify-content-start" style="margin-top:5%;">
@@ -343,12 +224,13 @@
 </div>
 
 <hr>
-
+<!--
 <div id="plotButtons">
 	<a id="showData" href="#" class="btn btn-outline-primary">Show Data</a>
+	<a id="savePlots" href="#" class="btn btn-outline-primary">Save Plots</a>
 	<a id="downloadPDF" href="#" class="btn btn-outline-primary">Download PDF</a>
 </div>
-
+-->
 		<div class="row justify-content-center" style="margin-top:5%;">
   		<div class="col" id="dataDiv">
   			{% if data_table is defined %}

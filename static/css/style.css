@@ -42,8 +42,16 @@ table.dataframe, .dataframe th, .dataframe td {
   width: 300px;
   height: 250px;
 }
+#savedPlots.selectpicker{
+  width: 300px;
+  height: 140px;
+}
 #plotButtons{
   text-align: center;
+}
+.plotBtn{
+  width: 200px;
+  margin: 10px;
 }
 .datainput {
   border-width: 3px;

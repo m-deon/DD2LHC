@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from itertools import cycle
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, json
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 from bokeh.plotting import figure
@@ -23,8 +23,11 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 's3cr3t'
 
 #Default
-selected_datasets = ['LUX_2016_SI', 'CMS_monojet_July2017_VECTOR']
+selected_datasets = []
 colors = cycle(['red', 'blue', 'green', 'orange'])
+
+#load the saved plots from file
+savedPlots = json.load(open("savedPlots.json"))
 
 def determine(data):
     if data is None:
@@ -35,6 +38,10 @@ def determine(data):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def getSavedPlots():
+    plots = savedPlots
+    return plots
 
 def getSimplifiedPlot():
     plot = figure(
@@ -106,8 +113,12 @@ def index():
     gu, gd, gs = get_gSM()
     si_modifier = get_SI_modifier()
 
+    #Generate Array of options
+    options = list(getSavedPlots().keys())
+
     dataset_selection = DatasetForm(gSM_input=gu)
     dataset_selection.datasets.choices = zip(get_datasets(), get_datasets())
+    dataset_selection.savedPlots.choices = zip(options, options)
     dataset_upload = UploadForm()
 
     global selected_datasets
@@ -171,6 +182,7 @@ def index():
                            dataset_selection = dataset_selection,
                            selected_datasets = selected_datasets,
                            allmetadata = allmetadata,
+                           savedPlots = getSavedPlots(),
                            dataset_upload = dataset_upload,
                            si_modifier = si_modifier,
                            gSM_gSM=gu,
@@ -230,6 +242,18 @@ def pdf():
                            si_modifier = si_modifier,
                            gSM_gSM=gu)
 
+@app.route('/savePlot', methods=['GET', 'POST'])
+def savePlot():
+    global savedPlots
+
+    savedPlotName = request.form['name']
+    selected_datasets = request.form['data'].split(",")
+
+    #Save to local copy and then flush to disk
+    savedPlots[savedPlotName] = selected_datasets
+    with open('savedPlots.json', 'w') as f:
+        json.dump(savedPlots, f)
+    return redirect(url_for('index'))
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -239,8 +263,7 @@ def upload():
         filename = secure_filename(f.filename)
         t = form.radio_inputType.data
         session[filename] = t
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename
-        ))
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
