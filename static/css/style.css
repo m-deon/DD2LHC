@@ -53,6 +53,10 @@ table.dataframe, .dataframe th, .dataframe td {
   width: 200px;
   margin: 10px;
 }
+#plotName{
+  width: 200px;
+  margin: 10px;
+}
 .datainput {
   border-width: 3px;
   border-style: solid;

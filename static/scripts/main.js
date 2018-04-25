@@ -17,9 +17,9 @@ window.onload = function() {
   }
 
   savePlotBtn.onclick = function () {
-    console.log('Save the dataset configurations');
+    var plotNameInput = document.getElementById("plotName");
     //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
-    post('/savePlot', {name: 'Set E',data:selected_datasets_js });
+    post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
     return false;
   }
   //Update the initial metadata
@@ -53,6 +53,7 @@ function selectPlots(savedSelection){
       datasetForm.options[i].selected = false;
     }
   }
+  datasetForm.focus();
   displayMetadata(datasetForm);
 }
 
