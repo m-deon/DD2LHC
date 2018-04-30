@@ -58,7 +58,7 @@ def set_SI_modifier(modifier):
 def get_SI_modifier():
     return si_modifier
 
-def dd2lhc(df):
+def dd2lhc_SD(df): #using for axial interactions
     f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
 
     # calculate mu
@@ -70,6 +70,16 @@ def dd2lhc(df):
     # calculate m_mediator
     df['m_med'] = np.power(f * df['mu_nDM'], 0.5) / np.power(math.pi * df['sigma_in_GeV'] / 3., 0.25)
 
+
+def dd2lhc_SI(df, modifier): #for scalar and vector interactins, scalar should be default (Higgs like)
+    df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
+    df['sigma_in_GeV'] = df['sigma'] * conv_units
+    print modifier 
+    if(modifier == 'scalar'):
+        fmMed2 = (mn/v)*gSM*gDM*(fup+fdp+fsp+2./27.*fTG*3.);
+        df['m_med']=np.power(fmMed2*df['mu_nDM'],0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
+    else:
+        df['m_med'] = np.power((2*gu+gd)*gDM*df['mu_nDM'], 0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
 
 def lhc2dd_SD(df,modifier='proton'):
     # calculate mu
@@ -196,7 +206,11 @@ def get_data(dataset,modifier=''):
     #convert
     if dataset_type == 'DD':
         df['type']='DD'
-        dd2lhc(df)
+        if spinDependency == 'SD':  #BP
+            dd2lhc_SD(df)
+        else:
+            dd2lhc_SI(df, modifier if modifier else si_modifier)
+
     elif dataset_type == 'LHC':
         df['type']='LHC'
         if spinDependency == 'SD':
