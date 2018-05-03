@@ -16,6 +16,9 @@ table.dataframe, .dataframe th, .dataframe td {
   font-family: 'Orbitron', sans-serif;
   font-size: 3.0em;
 }
+/*.dmbody{ //Attempt to format for printing
+  width: 1140px;
+}*/
 .subTitle{
   font-style: italic;
 }

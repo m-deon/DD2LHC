@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from itertools import cycle
-from flask import Flask, render_template, request, redirect, url_for, session, json
+from flask import Flask, render_template, request, redirect, url_for, session, json, make_response
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 from bokeh.plotting import figure
@@ -12,6 +12,9 @@ import bokeh
 import pandas as pd
 from flask import send_from_directory
 import numpy as np
+
+#from flask_weasyprint import HTML, render_pdf
+#import pdfkit
 
 from plotter import get_data, get_datasets, get_metadata, DATA_LOCATION, set_gSM, get_gSM, set_SI_modifier, get_SI_modifier
 from forms import DatasetForm, UploadForm, Set_gSM_Form
@@ -109,6 +112,10 @@ def updateValues():
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    return render_template('index.html')
+
+@app.route('/dmplotter', methods=['GET', 'POST'])
+def dmplotter():
     known_datasets = get_datasets()
     gu, gd, gs = get_gSM()
     si_modifier = get_SI_modifier()
@@ -171,7 +178,7 @@ def index():
     script1, div1 = components(p1, CDN)
     script2, div2 = components(p2, CDN)
     script3, div3 = components(legendPlot,CDN)
-    return render_template('index.html',
+    return render_template('dmplotter.html',
                            plot_script1=script1, plot_div1=div1,
                            plot_script2=script2, plot_div2=div2,
                            plot_script3=script3, plot_div3=div3,
@@ -232,7 +239,7 @@ def pdf():
     script2, div2 = components(p2, CDN)
     script3, div3 = components(legendPlot,CDN)
     #ToDo: Turn this render_template into a PDF file and download
-    return render_template('pdf.html',
+    html = render_template('pdf.html',
                            plot_script1=script1, plot_div1=div1,
                            plot_script2=script2, plot_div2=div2,
                            plot_script3=script3, plot_div3=div3,
@@ -241,6 +248,21 @@ def pdf():
                            metadata = metadata,
                            si_modifier = si_modifier,
                            gSM_gSM=gu)
+    return html
+    '''
+    css = 'static/css/style.css'
+    pdf = pdfkit.from_string(html, False, css=css)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = \
+                    'inline; filename=%s.pdf' % 'dd2lhc'
+    return response
+
+    #return render_pdf(HTML(string=html))
+    #return pdf
+    '''
+
 
 @app.route('/savePlot', methods=['GET', 'POST'])
 def savePlot():

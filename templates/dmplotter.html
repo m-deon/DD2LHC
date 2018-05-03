@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>DM Limiter</title>
+
+	<!-- custom -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+	<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+
+	<!-- bokeh -->
+	<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.14.min.css" type="text/css" />
+	<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.14.min.js"></script>
+
+	<!-- boostrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+			//Collect all the flask variables for use in the main js script
+		  var selected_datasets_js = {{selected_datasets|tojson}};
+			var metadata = [];
+			{% for data in allmetadata  %}
+			metadata.push({{data|tojson}});
+			{% endfor %}
+			var plots = {{savedPlots|tojson}};
+	</script>
+	<script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
+
+	<!-- plot  scripts-->
+	{% if plot_script1 %}
+		{{ plot_script1 | safe}}
+	{% endif %}
+	{% if plot_script2 %}
+		{{ plot_script2 | safe}}
+	{% endif %}
+	{% if plot_script3 %}
+		{{ plot_script3 | safe}}
+	{% endif %}
+</head>
+
+<body class="bg-light text-dark dmbody">
+	<nav class="navbar navbar-expand-md bg-primary navbar-dark" style="text-align:right">
+		<div class="container">
+			<div class="row">
+			<div class="col justify-content-start" style="text-align: left;">
+				<a class="btn btn-outline-primary text-white" href="http://www.brandeis.edu/departments/physics/">Brandeis University - Center for the Dark Universe</a>
+			</div>
+				<div class="col justify-content-end" >
+					<a href="#" class="btn btn-outline-primary text-white">Theory</a>
+					<a href="#" class="btn btn-outline-primary text-white">About</a>
+					<a href="#" class="btn btn-outline-primary text-white">Login</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="container">
+		<div class="row">
+			<div class="col-md-12" >
+				<div id="dmTitle">
+					DM Limiter
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" >
+				<p class="subTitle">Dark matter limit comparisons using simplified models</p>
+			</div>
+		</div>
+	</div>
+
+	 <div class="row justify-content-start" style="margin-top:5%;">
+  	<div class="col justify-content-start">
+  		<h3>How this app works</h3>
+  		<ul>
+  			<li>Select two or more limit samples</li>
+  			<li>Create comparison plot</li>
+  			<li>Download PDF for publications.</li>
+  			<li>Use XXX to cite us</li>
+  		</ul>
+  	</div>
+		<div class="col justify-content-end">
+			<h3>Upload new dataset</h3>
+			<form method="POST" action="/upload" enctype="multipart/form-data">
+				{{ dataset_upload.hidden_tag() }}
+				{{ dataset_upload.data_file(class="btn btn-default") }}
+			<div style='text-align:right;'>
+				{{ dataset_upload.upload_button(class="btn btn-outline-primary") }}
+			</div>
+			</form>
+		</div>
+	</div>
+
+<div class="headerTitle">
+	Dataset Selection
+</div>
+
+<div class="datainput">
+	<form method="POST" action="/index" name="dataset_selection">
+  	<div class="row justify-content-start">
+			<div class="col">
+				<h3>Select datasets to plot:</h3>
+					{{ dataset_selection.hidden_tag() }}
+					{{ dataset_selection.datasets(class="selectpicker",**{"onchange":"displayMetadata(this)"}) }}
+			</div>
+
+		<div class="col justify-content-end">
+			<h3>Conditionally Select Datasets:</h3>
+				{{dataset_selection.conditional_input(**{"onchange":"updateConditionalSelect(this)"}) }}
+				<h3>Saved Plots:</h3>
+				{{ dataset_selection.hidden_tag() }}
+				{{ dataset_selection.savedPlots(class="selectpicker",**{"onchange":"selectPlots(this)"}) }}
+		</div>
+
+	</div>
+<div class="row justify-content-start" style="margin-top:10px;">
+	<div class="col">
+		<h3>Standard Model coupling constant:</h3>
+				gSM = {{ dataset_selection.gSM_input}}<br>
+		<h3>Spin-Independent Model</h3>
+				{{dataset_selection.radio_inputSI}}
+	</div>
+	<div class="col" style='text-align:right;'>
+		<div id="parent">
+			<div id="child">
+
+				{{ dataset_selection.select(class="btn btn-outline-primary") }}
+			</div></div>
+	</div>
+</div>
+</form>
+
+	<hr>
+
+	<div class="row justify-content-start">
+		<div class="col justify-content-start">
+			<h3>Dataset Info</h3>
+				<div id='datasetInfo'>
+				</div>
+		</div>
+  </div>
+
+</div>
+
+<!-- -->
+
+<div class="headerTitle">
+	Comparison Plot
+</div>
+
+<div class="datainput">
+			<div class="row">
+				<div class="col justify-content-right">
+					{% if plot_div1 is defined %}
+						{{ plot_div1 | safe }}
+					{% endif %}
+				</div>
+				<div class="col justify-content-left">
+					{% if plot_div2 is defined %}
+						{{ plot_div2 | safe }}
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col justify-content-left">
+					{% if plot_div3 is defined %}
+						{{ plot_div3 | safe }}
+					{% endif %}
+				</div>
+				<div class="col">
+					<input type="text" id="plotName" name="plotName" placeholder="Plot Name"><br>
+					<a id="savePlots" href="#" class="btn btn-outline-primary plotBtn">Save Plots</a>
+					<hr>
+					<a id="showData" href="#" class="btn btn-outline-primary plotBtn">Show Data</a>
+					<a id="downloadPDF" href="#" class="btn btn-outline-primary plotBtn">Download PDF</a>
+				</div>
+			</div>
+			<hr>
+	<div class="row justify-content-start" style="margin-top:5%;">
+		<div class="col">
+			<h3>Selected Datasets:</h3>
+			{% for data in metadata  %}
+			<div class='row'>
+				<div class='col col-3'>Filename:</div>
+				<div class='col'>{{data['fileName']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3'>Label:</div>
+				<div class='col'>{{data['dataLabel']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3'>Comment:</div>
+				<div class='col'>{{data['dataComment']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3'>Reference:</div>
+				<div class='col'>{{data['dataReference'] | safe}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3'>Experiment</div>
+				<div class='col'>{{data['experiment']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3'>Spin</div>
+				<div class='col'>{{data['spinDependency']}}</div>
+			</div>
+			<hr>
+			{% endfor %}
+		</div>
+		<div class="col justify-content-end">
+			<h3>Selected Standard Model coupling constant:</h3>
+			<p>	gSM= {{gSM_gSM}}<br>
+			</p>
+			<h3>Spin-Independent Model</h3>
+			<p>	{{si_modifier}}<br>
+			</p>
+		</div>
+	</div>
+</div>
+
+<hr>
+<!--
+<div id="plotButtons">
+	<a id="showData" href="#" class="btn btn-outline-primary">Show Data</a>
+	<a id="savePlots" href="#" class="btn btn-outline-primary">Save Plots</a>
+	<a id="downloadPDF" href="#" class="btn btn-outline-primary">Download PDF</a>
+</div>
+-->
+		<div class="row justify-content-center" style="margin-top:5%;">
+  		<div class="col" id="dataDiv">
+  			{% if data_table is defined %}
+  				<h3>The data</h3>
+  				{{ data_table | safe }}
+  			{% endif %}
+  		</div>
+		</div>
+
+</div>
+
+
+</div> <!-- Container -->
+</body>
+</html>
