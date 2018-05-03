@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 SolidBuilds.com. All rights reserved
-#
-# Authors: Ling Thio <ling.thio@gmail.com>
-
-
 from flask import Blueprint, redirect, render_template
 from flask import request, url_for
 from flask_user import current_user, login_required, roles_required
@@ -52,7 +47,7 @@ main_blueprint = Blueprint('main', __name__, template_folder='templates')
 # The Home page is accessible to anyone
 @main_blueprint.route('/')
 def home_page():
-    return render_template('index.html')
+    return render_template('main/home_page.html')
 
 
 # The User page is accessible to authenticated users (users that have logged in)

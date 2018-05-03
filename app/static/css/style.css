@@ -23,7 +23,7 @@ table.dataframe, .dataframe th, .dataframe td {
   font-style: italic;
 }
 .headerTitle{
-  background-color: #0275d8;
+  background-color: #007bff;
   font-size: 1.5em;
   color: white;
   margin-bottom: 10px;
@@ -32,6 +32,17 @@ table.dataframe, .dataframe th, .dataframe td {
   border-style: solid;
   border-color: white;
   padding-left: 10px;
+}
+#dm_footer{
+  background-color: #007bff;
+  color: white;
+  margin-bottom: 10px;
+  border-width: 3px;
+  border-radius: 7px;
+  border-style: solid;
+  border-color: white;
+  padding-left: 10px;
+  height: 42px;
 }
 #headerLogo{
   width:100px;
