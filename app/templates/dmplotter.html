@@ -52,7 +52,16 @@
 				<div class="col justify-content-end" >
 					<a href="#" class="btn btn-outline-primary text-white">Theory</a>
 					<a href="#" class="btn btn-outline-primary text-white">About</a>
-					<a href="#" class="btn btn-outline-primary text-white">Login</a>
+					<a href="#" class="btn btn-outline-primary text-white">Logout</a>
+					<div class="pull-right">
+							{% if current_user.is_authenticated %}
+									<a href="{{ url_for('main.user_profile_page') }}">{{ current_user.first_name or current_user.username or current_user.email }}</a>
+									&nbsp; | &nbsp;
+									<a href="{{ url_for('user.logout') }}">Sign out</a>
+							{% else %}
+									<a href="{{ url_for('user.login') }}">Sign in</a>
+							{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -102,7 +111,7 @@
 </div>
 
 <div class="datainput">
-	<form method="POST" action="/index" name="dataset_selection">
+	<form method="POST" action="/dmplotter" name="dataset_selection">
   	<div class="row justify-content-start">
 			<div class="col">
 				<h3>Select datasets to plot:</h3>

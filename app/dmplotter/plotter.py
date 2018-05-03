@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import math
 import os
@@ -7,6 +8,7 @@ from flask import session
 import untangle
 from io import StringIO
 
+from bokeh.plotting import figure
 
 # whole bunch of defintions
 gDM = 1.
@@ -74,7 +76,7 @@ def dd2lhc_SD(df): #using for axial interactions
 def dd2lhc_SI(df, modifier): #for scalar and vector interactins, scalar should be default (Higgs like)
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
     df['sigma_in_GeV'] = df['sigma'] * conv_units
-    print modifier 
+    print modifier
     if(modifier == 'scalar'):
         fmMed2 = (mn/v)*gSM*gDM*(fup+fdp+fsp+2./27.*fTG*3.);
         df['m_med']=np.power(fmMed2*df['mu_nDM'],0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
@@ -233,6 +235,53 @@ def get_data(dataset,modifier=''):
     #print(df)
     return df
 
+def getSimplifiedPlot():
+    plot = figure(
+        title='Simplified Model Plane',
+        tools='wheel_zoom, pan, save',
+        toolbar_location="above",
+        x_axis_label='mMed',
+        x_axis_type="log",
+        y_axis_label="mDM",
+        y_axis_type="log",
+        plot_width=500,
+        plot_height=500,
+    )
+    plot.title.text_font_size = "1.2em"
+    plot.xaxis.axis_label_text_font_size = "14pt"
+    plot.yaxis.axis_label_text_font_size = "14pt"
+    return plot
+
+def getDDPlot():
+    plot = figure(
+        title='Direct Detection Plane',
+        tools='wheel_zoom, pan, save',
+        toolbar_location="above",
+        x_axis_label='mDM',
+        x_axis_type="log",
+        y_axis_label="σDM (cross-section)",
+        y_axis_type="log",
+        plot_width=500,
+        plot_height=500,
+    )
+    plot.title.text_font_size = "1.2em"
+    plot.xaxis.axis_label_text_font_size = "14pt"
+    plot.yaxis.axis_label_text_font_size = "14pt"
+    return plot
+
+def getLegendPlot():
+    legendPlot = figure(
+        plot_width=500,
+        plot_height=250,
+        tools="",
+        toolbar_location=None
+    )
+    legendPlot.axis.visible = False
+    legendPlot.xgrid.visible = False
+    legendPlot.ygrid.visible = False
+    legendPlot.outline_line_color = None
+    return legendPlot
+
 
 if __name__ == '__main__':
     lhc_df1 = get_data('CMS_monojet_July2017_VECTOR','vector')
@@ -242,4 +291,3 @@ if __name__ == '__main__':
     dd_df1 = get_data('LUX_2016_SI')
     dd_df2 = get_data('LUX_2016_SD_p')
     dd_df3 = get_data('LUX_2016_SD_n')
-
