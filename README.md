@@ -2,7 +2,7 @@
 
 This app was developed at Brandeis University to leverage research by Bjoern Penning in the search for Dark Matter. The app leverages a conversion algorithm to compare results between various collider experiments and direct detection experiments. DM Limiter will analyze the selected results and  plot both the simplified model plane and the direct detection plane for comparison.
 
-![DM Limiter Screenshot](https://github.com/jcope/dd2lhc_jc/Screenshot.png "DM Limiter")
+![DM Limiter Screenshot](https://github.com/jcope/DD2LHC/blob/master/Screenshot.png "DM Limiter")
 
 ---
 ## Install and Setup
@@ -19,18 +19,22 @@ conda create -n dd2lhc python=2.7.10 -y
 ```
 source activate dd2lhc
 ```
-### install packages
+#### install packages
 ```
 conda install -y --file conda-requirements.txt
 pip install -r requirements.txt
 ````
-### initialize User Database:
+#### initialize User Database:
 ```
 python manage.py init_db
 ```
 ---
 ## Usage
 
+### activate conda python session
+```
+source activate dd2lhc
+```
 ### To run locally:
 ```
 python manage.py runserver #Launch App
