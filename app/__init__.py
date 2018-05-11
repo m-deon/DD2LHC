@@ -18,13 +18,13 @@ csrf_protect = CSRFProtect()
 db = SQLAlchemy()
 mail = Mail()
 migrate = Migrate()
+app = Flask(__name__)
 
 # Initialize Flask Application
 def create_app(extra_config_settings={}):
     """Create a Flask application.
     """
     # Instantiate Flask
-    app = Flask(__name__)
     app.config['UPLOAD_FOLDER'] = 'data/'
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     app.secret_key = 's3cr3t'

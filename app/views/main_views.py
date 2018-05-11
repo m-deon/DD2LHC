@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
 from flask import Blueprint, redirect, render_template
 from flask import request, url_for
 from flask_user import current_user, login_required, roles_required
 
 from app import db
+from app import app
 from app.models.user_models import UserProfileForm
 
 #DM Limiter
@@ -166,3 +168,37 @@ def dmplotter():
                            si_modifier = si_modifier,
                            gSM_gSM=gu,
                            gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
+
+@main_blueprint.route('/updateValues', methods=['GET', 'POST'])
+def updateValues():
+    gSM_refresh = Set_gSM_Form()
+    gSM = gSM_refresh.gSM_input.data
+    set_gSM(gSM,gSM,gSM)
+    #Future: Individually set coupling constant
+    #gU = gSM_refresh.gU_input.data
+    #gD = gSM_refresh.gD_input.data
+    #gS = gSM_refresh.gS_input.data
+    #set_gSM(gU,gD,gS)
+    return redirect(url_for('main.dmplotter'))
+
+@main_blueprint.route('/savePlot', methods=['GET', 'POST'])
+def savePlot():
+    global savedPlots
+
+    savedPlotName = request.form['name']
+    selected_datasets = request.form['data'].split(",")
+
+    #Save to local copy and then flush to disk
+    savedPlots[savedPlotName] = selected_datasets
+    with open('savedPlots.json', 'w') as f:
+        json.dump(savedPlots, f)
+    return redirect(url_for('main.dmplotter'))
+
+@main_blueprint.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm(CombinedMultiDict((request.files, request.form)))
+    if form.validate_on_submit():
+        f = form.data_file.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return redirect(url_for('main.dmplotter'))

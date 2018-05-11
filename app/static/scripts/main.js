@@ -135,6 +135,12 @@ function post(path, params, method) {
       }
   }
 
+  var csrfField = document.createElement("input");
+  csrfField.setAttribute("type", "hidden");
+  csrfField.setAttribute("name", "csrf_token");
+  csrfField.setAttribute("value", csrf);
+  form.appendChild(csrfField);
+
   document.body.appendChild(form);
   form.submit();
 }

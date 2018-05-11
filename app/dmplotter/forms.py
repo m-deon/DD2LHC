@@ -17,9 +17,8 @@ class DatasetForm(FlaskForm):
 class UploadForm(FlaskForm):
     data_file = FileField('dataset', validators=[
         FileRequired(),
-        FileAllowed(['dat'], 'datasets only!')
+        FileAllowed(['xml'], 'datasets only!')
     ])
-    radio_inputType = RadioField(u'Data Type', choices=[('DD', 'DD [m_DM,sigma]'), ('LHC', 'LHC [m_med,m_DM]')])
     upload_button = SubmitField('Upload Dataset')
 
 class Set_gSM_Form(FlaskForm):
