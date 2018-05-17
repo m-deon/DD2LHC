@@ -3,7 +3,7 @@
   <data-comment></data-comment>
   <data-label>DarkSide-50 532 Day Search 90% CL SI </data-label>
   <data-reference>&lt;a href="https://arxiv.org/pdf/1802.07198.pdf"&gt; arXiv:1802.07198 &lt;/a&gt;</data-reference>
-  <data-values>{[0.010	1;
+  <data-values>{[
 0.0158489	2.3e-38;
 0.0177828	3.43284e-40;
 0.0199526	2.40838e-41;
