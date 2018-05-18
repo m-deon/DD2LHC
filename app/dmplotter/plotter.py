@@ -39,6 +39,7 @@ def dataset_names():
     for dataset in datasets:
         dataset = dataset.replace(DATA_LOCATION, '')
         dataset = dataset.replace(DATA_FILE_EXT, '')
+        #dataset = dataset.replace('_', ' ')
         yield dataset
 
 def get_datasets():

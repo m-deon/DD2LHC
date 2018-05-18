@@ -28,6 +28,7 @@ window.onload = function() {
 }
 
 function displayMetadata(form){
+  checkSpinConsistency(form);
   //Generate the new metadata to display, depending if item is selected
   var displayText = "";
   for (i=0; i<form.options.length; i=i+1) {
@@ -38,6 +39,25 @@ function displayMetadata(form){
   //Push the text to the html element
   var textElement = document.getElementById('datasetInfo');
   textElement.innerHTML = displayText;
+}
+
+function checkSpinConsistency(form){
+  var spinClass;
+  for (i=0; i<form.options.length; i=i+1) {
+  if (form.options[i].selected ) {
+      if(spinClass){
+        if(metadata[i].spinDependency != spinClass){
+          alertSpinSelectError();
+        }
+      }
+      else{
+        spinClass = metadata[i].spinDependency;
+      }
+    }
+  }
+}
+function alertSpinSelectError(){
+  alert('Spin Error!');
 }
 
 function selectPlots(savedSelection){
@@ -64,7 +84,7 @@ function getMetadataDisplay(metadata){
   displayText += "Filename:";
   displayText += "</div>";
   displayText += "<div class='col'>";
-  displayText += metadata['fileName'];
+  displayText += metadata.fileName;
   displayText += "</div>";
   displayText += "</div>";
 
@@ -73,7 +93,7 @@ function getMetadataDisplay(metadata){
   displayText += "Label:";
   displayText += "</div>";
   displayText += "<div class='col'>";
-  displayText += metadata['dataLabel'];
+  displayText += metadata.dataLabel;
   displayText += "</div>";
   displayText += "</div>";
 
@@ -82,7 +102,7 @@ function getMetadataDisplay(metadata){
   displayText += "Comment:";
   displayText += "</div>";
   displayText += "<div class='col'>";
-  displayText += metadata['dataComment'];
+  displayText += metadata.dataComment;
   displayText += "</div>";
   displayText += "</div>";
   displayText = displayText + '<hr>';
