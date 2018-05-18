@@ -41,16 +41,16 @@ function displayMetadata(form){
   textElement.innerHTML = displayText;
 }
 
+
 function checkSpinConsistency(form){
-  console.log('Here');
   var spinClass;
   for (i=0; i<form.options.length; i=i+1) {
   if (form.options[i].selected ) {
       if(spinClass){
-        console.log('Spin set:');
-        console.log(spinClass);
         if(metadata[i].spinDependency != spinClass){
-          alertSpinSelectError();
+          //Deselect the error spin selection
+          form.options[i].selected = false;
+          alertSpinSelectError(spinClass, i);
         }
       }
       else{
@@ -59,9 +59,11 @@ function checkSpinConsistency(form){
     }
   }
 }
-function alertSpinSelectError(){
-  alert('Spin Error!');
+
+function alertSpinSelectError(spinClass){
+  alert('Please be consistant with your spin selection.');
 }
+
 
 function selectPlots(savedSelection){
   var datasetForm = document.getElementById("datasets");
@@ -83,7 +85,7 @@ function selectPlots(savedSelection){
 function getMetadataDisplay(metadata){
   var displayText = "";
   displayText += "<div class='row'>";
-  displayText += "<div class='col col-2'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Filename:";
   displayText += "</div>";
   displayText += "<div class='col'>";
@@ -92,7 +94,7 @@ function getMetadataDisplay(metadata){
   displayText += "</div>";
 
   displayText += "<div class='row'>";
-  displayText += "<div class='col col-2'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Label:";
   displayText += "</div>";
   displayText += "<div class='col'>";
@@ -101,11 +103,20 @@ function getMetadataDisplay(metadata){
   displayText += "</div>";
 
   displayText += "<div class='row'>";
-  displayText += "<div class='col col-2'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Comment:";
   displayText += "</div>";
   displayText += "<div class='col'>";
   displayText += metadata.dataComment;
+  displayText += "</div>";
+  displayText += "</div>";
+
+  displayText += "<div class='row'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
+  displayText += "Spin:";
+  displayText += "</div>";
+  displayText += "<div class='col'>";
+  displayText += metadata.spinDependency;
   displayText += "</div>";
   displayText += "</div>";
   displayText = displayText + '<hr>';
