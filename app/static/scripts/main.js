@@ -28,6 +28,7 @@ window.onload = function() {
 }
 
 function displayMetadata(form){
+  console.log(form);
   checkSpinConsistency(form);
   //Generate the new metadata to display, depending if item is selected
   var displayText = "";
