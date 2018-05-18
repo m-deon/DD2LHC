@@ -148,27 +148,27 @@
 			<h3>Selected Datasets:</h3>
 			{% for data in metadata  %}
 			<div class='row'>
-				<div class='col col-3'>Filename:</div>
+				<div class='col col-3' style='font-weight:bold'>Filename:</div>
 				<div class='col'>{{data['fileName']}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-3'>Label:</div>
+				<div class='col col-3' style='font-weight:bold'>Label:</div>
 				<div class='col'>{{data['dataLabel']}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-3'>Comment:</div>
+				<div class='col col-3' style='font-weight:bold'>Comment:</div>
 				<div class='col'>{{data['dataComment']}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-3'>Reference:</div>
+				<div class='col col-3' style='font-weight:bold'>Reference:</div>
 				<div class='col'>{{data['dataReference'] | safe}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-3'>Experiment</div>
+				<div class='col col-3' style='font-weight:bold'>Experiment:</div>
 				<div class='col'>{{data['experiment']}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-3'>Spin</div>
+				<div class='col col-3'>Spin:</div>
 				<div class='col'>{{data['spinDependency']}}</div>
 			</div>
 			<hr>

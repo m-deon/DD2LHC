@@ -1,3 +1,4 @@
+var spinClass;
 window.onload = function() {
   var dataBtn = document.getElementById("showData");
   var pdfBtn = document.getElementById("downloadPDF");
@@ -44,20 +45,25 @@ function displayMetadata(form){
 
 
 function checkSpinConsistency(form){
-  var spinClass;
+  var dataSelected = false;
   for (i=0; i<form.options.length; i=i+1) {
   if (form.options[i].selected ) {
+      dataSelected = true;
       if(spinClass){
         if(metadata[i].spinDependency != spinClass){
           //Deselect the error spin selection
           form.options[i].selected = false;
-          alertSpinSelectError(spinClass, i);
+          alertSpinSelectError(spinClass);
         }
       }
       else{
         spinClass = metadata[i].spinDependency;
       }
     }
+  }
+  //If none are selected, (deselection from 1), then reset the spinClass
+  if(!dataSelected){
+    spinClass = 0;
   }
 }
 
