@@ -42,10 +42,13 @@ function displayMetadata(form){
 }
 
 function checkSpinConsistency(form){
+  console.log('Here');
   var spinClass;
   for (i=0; i<form.options.length; i=i+1) {
   if (form.options[i].selected ) {
       if(spinClass){
+        console.log('Spin set:');
+        console.log(spinClass);
         if(metadata[i].spinDependency != spinClass){
           alertSpinSelectError();
         }
