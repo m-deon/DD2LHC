@@ -45,15 +45,16 @@ function displayMetadata(form){
 
 
 function checkSpinConsistency(form){
-  var dataSelected = false;
+  var errorIndex = -1;
+  var count = 0;
   for (i=0; i<form.options.length; i=i+1) {
   if (form.options[i].selected ) {
+      count++;
       dataSelected = true;
       if(spinClass){
         if(metadata[i].spinDependency != spinClass){
           //Deselect the error spin selection
-          form.options[i].selected = false;
-          alertSpinSelectError(spinClass);
+          errorIndex = i;
         }
       }
       else{
@@ -62,8 +63,12 @@ function checkSpinConsistency(form){
     }
   }
   //If none are selected, (deselection from 1), then reset the spinClass
-  if(!dataSelected){
+  if(count==0){
     spinClass = 0;
+  }
+  else if(count>1 && errorIndex>=0){
+    form.options[errorIndex].selected = false;
+    alertSpinSelectError(spinClass);
   }
 }
 
