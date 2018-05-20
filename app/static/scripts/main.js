@@ -8,25 +8,25 @@ window.onload = function() {
     var data = document.getElementById("dataDiv");
     data.style.display = "block";
     return false;
-  }
+  };
 
   pdfBtn.onclick = function() {
     //redirect to pdf.html with selected datasets
     //window.location.href = "{{ url_for('pdf') }}";
     post('/pdf', {name: 'Donnie Darko'});
     return false;
-  }
+  };
 
   savePlotBtn.onclick = function () {
     var plotNameInput = document.getElementById("plotName");
     //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
     post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
     return false;
-  }
+  };
   //Update the initial metadata
   var datasetForm = document.getElementById("datasets");
   displayMetadata(datasetForm);
-}
+};
 
 function displayMetadata(form){
   console.log(form);
@@ -47,10 +47,12 @@ function displayMetadata(form){
 function checkSpinConsistency(form){
   var errorIndex = -1;
   var count = 0;
+  var localSpin = 0;
   for (i=0; i<form.options.length; i=i+1) {
-  if (form.options[i].selected ) {
+    if (form.options[i].selected) {
       count++;
-      dataSelected = true;
+      //dataSelected = true;
+      localSpin = metadata[i].spinDependency;
       if(spinClass){
         if(metadata[i].spinDependency != spinClass){
           //Deselect the error spin selection
@@ -65,6 +67,9 @@ function checkSpinConsistency(form){
   //If none are selected, (deselection from 1), then reset the spinClass
   if(count==0){
     spinClass = 0;
+  }
+  else if(count == 1){
+    spinClass = localSpin;
   }
   else if(count>1 && errorIndex>=0){
     form.options[errorIndex].selected = false;
