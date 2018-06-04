@@ -47,7 +47,6 @@ function displayMetadata(form){
 //Ensures all selected data sets have the same spin consistency
 //Avoid checking if bulk update
 function checkSpinConsistency(form){
-  console.log('Bulk: '+bulkUpdate);
   var errorIndex = -1;
   var count = 0;
   var localSpin = 0;

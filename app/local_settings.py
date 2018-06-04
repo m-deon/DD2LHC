@@ -17,8 +17,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///../app.sqlite'
 SQLALCHEMY_TRACK_MODIFICATIONS = False    # Avoids a SQLAlchemy Warning
 
 # Flask-Mail settings
-# For smtp.gmail.com to work, you MUST set "Allow less secure apps" to ON in Google Accounts.
-# Change it in https://myaccount.google.com/security#connectedapps (near the bottom).
+# Note: Using Mailserver provided by EmmaTech (JCope) via Mailgun
 MAIL_SERVER = 'smtp.mailgun.org'
 MAIL_PORT = 587
 MAIL_USE_SSL = False

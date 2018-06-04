@@ -87,6 +87,14 @@ def user_profile_page():
     return render_template('main/user_profile_page.html',
                            form=form)
 
+@main_blueprint.route('/about')
+def about_page():
+    return render_template('about.html')
+
+@main_blueprint.route('/theory')
+def theory_page():
+    return render_template('theory.html')
+
 @main_blueprint.route('/dmplotter', methods=['GET', 'POST'])
 @login_required
 def dmplotter():

@@ -46,6 +46,38 @@ Use `python manage.py runserver` to start the development web server on localhos
 Use `python manage.py runserver --help` for a list of runserver options.
 
 ---
+## Development
+
+
+`app/dmplotter/plotter.py` Business logic that reads data, applies conversions, defines plot configurations
+`app/dmplotter/conversions.py` **Actual conversion/theory that applies to DM research**
+`app/dmplotter/forms.py` Declarations for the html forms found on the main DM Limiter page
+
+`app/static/scripts/main.js` Web logic executed at run time (ie detect change in forms, update metadata displayed)
+`app/views/mainviews.py`  Maps the web addresses to actual actions and page renderings
+
+`app/templates/layout.html` Contains the basic layout all other pages are generated from
+`app/templates/dmplotter.html` Template and layout for the dm limiter app (configuration forms, dual plots, everything).
+`app/templates/about.html` The about page (accessed at top navigation)
+`app/templates/theory.html` The theory page (accessed at top navigation)
+
+`app/static/css/style.css` General stylesheet for the overall layout/theme of web app
+
+---
 ## Deployment
 ### Heroku
 In order go get plots on heroku, before deploying the first time go to in Heroku to 'settings' app and add the following buildpack: https://github.com/kennethreitz/conda-buildpack.git
+
+### PythonAnywhere
+
+https://help.pythonanywhere.com/pages/Flask/
+
+***Note: Replace `JCope` with actual username/account name***
+Create a virtual python environment using version 2.7
+`mkvirtualenv --python=/usr/bin/python2.7 my-virtualenv`
+Use this file to install the package requirements on
+`deploy/pythonanywhere/requirements.txt`
+Example WSIG file
+`deploy/pythonanywhere/DMLimiter_WSIG.py`
+Set working path to
+`/home/JCope/DD2LHC`
