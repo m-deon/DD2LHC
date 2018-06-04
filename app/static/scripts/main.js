@@ -1,3 +1,4 @@
+var spinClass;
 window.onload = function() {
   var dataBtn = document.getElementById("showData");
   var pdfBtn = document.getElementById("downloadPDF");
@@ -7,27 +8,29 @@ window.onload = function() {
     var data = document.getElementById("dataDiv");
     data.style.display = "block";
     return false;
-  }
+  };
 
   pdfBtn.onclick = function() {
     //redirect to pdf.html with selected datasets
     //window.location.href = "{{ url_for('pdf') }}";
     post('/pdf', {name: 'Donnie Darko'});
     return false;
-  }
+  };
 
   savePlotBtn.onclick = function () {
     var plotNameInput = document.getElementById("plotName");
     //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
     post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
     return false;
-  }
+  };
   //Update the initial metadata
   var datasetForm = document.getElementById("datasets");
   displayMetadata(datasetForm);
-}
+};
 
 function displayMetadata(form){
+  console.log(form);
+  checkSpinConsistency(form);
   //Generate the new metadata to display, depending if item is selected
   var displayText = "";
   for (i=0; i<form.options.length; i=i+1) {
@@ -39,6 +42,45 @@ function displayMetadata(form){
   var textElement = document.getElementById('datasetInfo');
   textElement.innerHTML = displayText;
 }
+
+
+function checkSpinConsistency(form){
+  var errorIndex = -1;
+  var count = 0;
+  var localSpin = 0;
+  for (i=0; i<form.options.length; i=i+1) {
+    if (form.options[i].selected) {
+      count++;
+      //dataSelected = true;
+      localSpin = metadata[i].spinDependency;
+      if(spinClass){
+        if(metadata[i].spinDependency != spinClass){
+          //Deselect the error spin selection
+          errorIndex = i;
+        }
+      }
+      else{
+        spinClass = metadata[i].spinDependency;
+      }
+    }
+  }
+  //If none are selected, (deselection from 1), then reset the spinClass
+  if(count==0){
+    spinClass = 0;
+  }
+  else if(count == 1){
+    spinClass = localSpin;
+  }
+  else if(count>1 && errorIndex>=0){
+    form.options[errorIndex].selected = false;
+    alertSpinSelectError(spinClass);
+  }
+}
+
+function alertSpinSelectError(spinClass){
+  alert('Please be consistant with your spin selection.');
+}
+
 
 function selectPlots(savedSelection){
   var datasetForm = document.getElementById("datasets");
@@ -60,29 +102,38 @@ function selectPlots(savedSelection){
 function getMetadataDisplay(metadata){
   var displayText = "";
   displayText += "<div class='row'>";
-  displayText += "<div class='col col-2'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Filename:";
   displayText += "</div>";
   displayText += "<div class='col'>";
-  displayText += metadata['fileName'];
+  displayText += metadata.fileName;
   displayText += "</div>";
   displayText += "</div>";
 
   displayText += "<div class='row'>";
-  displayText += "<div class='col col-2'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Label:";
   displayText += "</div>";
   displayText += "<div class='col'>";
-  displayText += metadata['dataLabel'];
+  displayText += metadata.dataLabel;
   displayText += "</div>";
   displayText += "</div>";
 
   displayText += "<div class='row'>";
-  displayText += "<div class='col col-2'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Comment:";
   displayText += "</div>";
   displayText += "<div class='col'>";
-  displayText += metadata['dataComment'];
+  displayText += metadata.dataComment;
+  displayText += "</div>";
+  displayText += "</div>";
+
+  displayText += "<div class='row'>";
+  displayText += "<div class='col col-2' style='font-weight:bold'>";
+  displayText += "Spin:";
+  displayText += "</div>";
+  displayText += "<div class='col'>";
+  displayText += metadata.spinDependency;
   displayText += "</div>";
   displayText += "</div>";
   displayText = displayText + '<hr>';
