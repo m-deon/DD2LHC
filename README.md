@@ -50,16 +50,25 @@ Use `python manage.py runserver --help` for a list of runserver options.
 
 
 `app/dmplotter/plotter.py` Business logic that reads data, applies conversions, defines plot configurations
+
 `app/dmplotter/conversions.py` **Actual conversion/theory that applies to DM research**
+
 `app/dmplotter/forms.py` Declarations for the html forms found on the main DM Limiter page
 
+
 `app/static/scripts/main.js` Web logic executed at run time (ie detect change in forms, update metadata displayed)
+
 `app/views/mainviews.py`  Maps the web addresses to actual actions and page renderings
 
+
 `app/templates/layout.html` Contains the basic layout all other pages are generated from
+
 `app/templates/dmplotter.html` Template and layout for the dm limiter app (configuration forms, dual plots, everything).
+
 `app/templates/about.html` The about page (accessed at top navigation)
+
 `app/templates/theory.html` The theory page (accessed at top navigation)
+
 
 `app/static/css/style.css` General stylesheet for the overall layout/theme of web app
 
