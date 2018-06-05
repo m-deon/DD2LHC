@@ -22,8 +22,9 @@ import pandas as pd
 from flask import send_from_directory
 import numpy as np
 #DM Packages
-from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_gSM, get_gSM, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot
+from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot
 from app.dmplotter.forms import DatasetForm, UploadForm, Set_gSM_Form
+from app.dmplotter.conversion import set_gSM, get_gSM
 #DM Default
 ALLOWED_EXTENSIONS = set(['xml'])
 selected_datasets = []

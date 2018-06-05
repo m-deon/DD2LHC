@@ -16,6 +16,15 @@ fup, fdp = 0.0208, 0.0411 #from arXiv:1506.04142
 fsp=0.043 #from arXiv:1301.1114
 fTG=1-fup-fdp-fsp
 
+def set_gSM(_gU,_gD,_gS):
+    global gu, gd, gs
+    gu = _gU
+    gd = _gD
+    gs = _gS
+
+def get_gSM():
+    return gu, gd, gs
+    
 def dd2lhc_SD(df): #using for axial interactions
     f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
 

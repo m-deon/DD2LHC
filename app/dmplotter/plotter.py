@@ -29,15 +29,6 @@ def dataset_names():
 def get_datasets():
     return list(dataset_names())
 
-def set_gSM(_gU,_gD,_gS):
-    global gu, gd, gs
-    gu = _gU
-    gd = _gD
-    gs = _gS
-
-def get_gSM():
-    return gu, gd, gs
-
 def set_SI_modifier(modifier):
     global si_modifier
     si_modifier = modifier
@@ -154,6 +145,11 @@ def get_data(dataset,modifier=''):
     pd.set_option('expand_frame_repr',False)
     #print(df)
     return df
+
+
+################################################################################
+################################################################################
+################################################################################
 
 def getSimplifiedPlot():
     plot = figure(
