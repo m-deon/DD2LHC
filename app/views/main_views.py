@@ -203,6 +203,60 @@ def savePlot():
         json.dump(savedPlots, f)
     return redirect(url_for('main.dmplotter'))
 
+@main_blueprint.route('/pdf', methods=['GET', 'POST'])
+def generatePDF():
+
+    gu, gd, gs = get_gSM()
+    si_modifier = get_SI_modifier()
+
+    global selected_datasets
+
+    datasets = selected_datasets
+    dfs = map(get_data, datasets)
+
+    #Filter, TODO: Apply filter to selected_datasets prior to conversion (attempt)
+    #get_data will return a 'None' object if the selected dataset could not be converted, (bad experiement string..)
+    dfs = [x for x in dfs if determine(x)]
+
+    metadata = map(get_metadata, datasets)
+
+    p1 = getSimplifiedPlot()
+    p2 = getDDPlot()
+    legendPlot = getLegendPlot()
+
+    legendItems = []
+    x = 1
+    y = 2*x
+    for df, color in zip(dfs, colors):
+        label = df['label'].any()
+        df['color'] = color
+        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color)
+        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color)
+        line = legendPlot.line(x,y,line_width=2, color=color)
+        legendItems.append((label,[line]))
+
+    #Initialize all_data in the case that all datasets selected where invalid
+    all_data = pd.DataFrame()
+    if(len(dfs) > 0):
+        all_data = pd.concat(dfs)
+
+    legend = Legend(items=legendItems, location=(0, 0))
+    legendPlot.add_layout(legend, 'above')
+
+    script1, div1 = components(p1, CDN)
+    script2, div2 = components(p2, CDN)
+    script3, div3 = components(legendPlot,CDN)
+    return render_template('pdf.html',
+                           plot_script1=script1, plot_div1=div1,
+                           plot_script2=script2, plot_div2=div2,
+                           plot_script3=script3, plot_div3=div3,
+                           bokeh_version=bokeh.__version__,
+                           metadata = metadata,
+                           selected_datasets = selected_datasets,
+                           si_modifier = si_modifier,
+                           gSM_gSM=gu,
+                           gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
+
 @main_blueprint.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm(CombinedMultiDict((request.files, request.form)))
