@@ -1,0 +1,84 @@
+table.dataframe, .dataframe th, .dataframe td {
+  border: none;
+  border-bottom: 1px solid #C8C8C8;
+  border-collapse: collapse;
+  text-align:left;
+  padding: 10px;
+  margin-bottom: 40px;
+  font-size: 0.9em;
+}
+.input-group {
+ 	width:50%;
+ 	float:none;
+ 	margin:0 auto;
+}
+#dmTitle{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.0em;
+}
+/*.dmbody{ //Attempt to format for printing
+  width: 1140px;
+}*/
+.subTitle{
+  font-style: italic;
+}
+.headerTitle{
+  background-color: #007bff;
+  font-size: 1.5em;
+  color: white;
+  margin-bottom: 10px;
+  border-width: 3px;
+  border-radius: 7px;
+  border-style: solid;
+  border-color: white;
+  padding-left: 10px;
+}
+#dm_footer{
+  background-color: #007bff;
+  color: white;
+  margin-bottom: 10px;
+  border-width: 3px;
+  border-radius: 7px;
+  border-style: solid;
+  border-color: white;
+  padding-left: 10px;
+  height: 42px;
+}
+#headerLogo{
+  width:100px;
+  height:100px;
+  float: left;
+}
+#dmLogo{
+  height:100px;
+}
+#datasets.selectpicker{
+  width: 300px;
+  height: 250px;
+}
+#savedPlots.selectpicker{
+  width: 300px;
+  height: 140px;
+}
+#plotButtons{
+  text-align: center;
+}
+.plotBtn{
+  width: 200px;
+  margin: 10px;
+}
+#plotName{
+  width: 200px;
+  margin: 10px;
+}
+.datainput {
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+#dataDiv{
+  display:none;
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- These 3 meta tags MUST come first -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- These 3 meta tags MUST come first -->
+        <title>{{ user_manager.USER_APP_NAME }}</title>
+
+        <!-- Bootstrap CSS and JS -->
+        <!-- <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"> -->
+        <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="{{ url_for('static', filename='bootstrap/js/html5shiv.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='bootstrap/js/respond.min.js') }}"></script>
+        <![endif]-->
+
+        <!-- In-lining styles to avoid needing a separate .css file -->
+        <style>
+            hr { border-color: #cccccc; margin: 0; }
+            .no-margins { margin: 0px; }
+            .with-margins { margin: 10px; }
+            .col-centered { float: none; margin: 0 auto; }
+        </style>
+
+        <!-- Application specific CSS-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+
+        {# *** Allow sub-templates to insert extra html to the head section *** #}
+        {% block extra_css %}{% endblock %}
+        {% block extra_js %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        <!-- Application specific HTML -->
+        <nav class="navbar navbar-expand-md bg-primary navbar-dark" style="text-align:right">
+          <div class="container">
+            <div class="row" style="width:100%;">
+            <div class="col justify-content-start" style="text-align: left;">
+              <a class="btn btn-outline-primary text-white" href="http://www.brandeis.edu/departments/physics/">Brandeis University - Center for the Dark Universe</a>
+            </div>
+              <div class="col justify-content-end" >
+                <a href="{{ url_for('main.theory_page') }}" class="btn btn-outline-primary text-white">Theory</a>
+                <a href="{{ url_for('main.about_page') }}" class="btn btn-outline-primary text-white">About</a>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('user.logout') }}" class="btn btn-outline-primary text-white">Sign out</a>
+                {% else %}
+                <a href="{{ url_for('user.login') }}" class="btn btn-outline-primary text-white">Sign in</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12" >
+              <div id="dmTitle">
+                DM Limiter
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12" >
+              <p class="subTitle">Dark matter limit comparisons using simplified models</p>
+            </div>
+          </div>
+        </div>
+
+      <!--
+        <div id="header-div" class="clearfix with-margins">
+            <div class="pull-left"><a href="/"><h1 class="no-margins">Flask-User starter app</h1></a></div>
+            <div class="pull-right">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('main.user_profile_page') }}">{{ current_user.first_name or current_user.username or current_user.email }}</a>
+                    &nbsp; | &nbsp;
+                    <a href="{{ url_for('user.logout') }}">Sign out</a>
+                {% else %}
+                    <a href="{{ url_for('user.login') }}">Sign in</a>
+                {% endif %}
+            </div>
+        </div>
+      -->
+        <hr class="no-margins"/>
+
+        <div id="main-div" class="with-margins">
+        {% block pre_content %}{% endblock %}
+
+        {# One-time system messages called Flash messages #}
+        {% block flash_messages %}
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category=='error' %}
+                            {% set category='danger' %}
+                        {% endif %}
+                        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+            {%- endwith %}
+        {% endblock %}
+
+        {% block main %}
+        <div class="container">
+            <div class="row">
+                <div class="col-centered">
+            {% block content %}{% endblock %}
+                </div>
+              </div>
+            </div>
+        {% endblock %}
+        </div>
+
+        <br/>
+        <hr class="no-margins"/>
+
+        <div class="container" id='dm_footer'>
+          <div class="row" style="width:100%;">
+            <div class="col justify-content-start" style="text-align: left;">{{ user_manager.USER_APP_NAME }} v1.3 </div>
+            <div class="col justify-content-end" style="text-align: right;"> &copy; 2018 Brandeis University</div>
+          </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+
+        <!-- Optional Google Analytics: change UA-XXXXX-X to be your site's ID.
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+        </script>
+        -->
+        {% endblock %}
+    </body>
+</html>
