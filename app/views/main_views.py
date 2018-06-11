@@ -21,6 +21,7 @@ import bokeh
 import pandas as pd
 from flask import send_from_directory
 import numpy as np
+#import pdfkit
 #DM Packages
 from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot
 from app.dmplotter.forms import DatasetForm, UploadForm, Set_gSM_Form
@@ -210,6 +211,10 @@ def generatePDF():
     si_modifier = get_SI_modifier()
 
     global selected_datasets
+    #Will re-use the previously selected values for the dataset_type
+    #Optional: provide datasel file names in the POST parameters
+    if request.method == 'POST':
+        print('Use this are to parse to posted datasets');
 
     datasets = selected_datasets
     dfs = map(get_data, datasets)
@@ -246,7 +251,7 @@ def generatePDF():
     script1, div1 = components(p1, CDN)
     script2, div2 = components(p2, CDN)
     script3, div3 = components(legendPlot,CDN)
-    return render_template('pdf.html',
+    html =  render_template('pdf.html',
                            plot_script1=script1, plot_div1=div1,
                            plot_script2=script2, plot_div2=div2,
                            plot_script3=script3, plot_div3=div3,
@@ -254,8 +259,18 @@ def generatePDF():
                            metadata = metadata,
                            selected_datasets = selected_datasets,
                            si_modifier = si_modifier,
-                           gSM_gSM=gu,
-                           gSM_gU=gu,gSM_gD=gd,gSM_gS=gs)
+                           gSM_gSM=gu)
+    return html
+'''
+    css = 'app/static/css/style.css'
+    pdf = pdfkit.from_string(html, False, css=css)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = \
+                    'inline; filename=%s.pdf' % 'dd2lhc'
+    return response
+'''
 
 @main_blueprint.route('/upload', methods=['GET', 'POST'])
 def upload():

@@ -10,6 +10,9 @@
 		//Collect all the flask variables for use in the main js script
 		var selected_datasets_js = {{selected_datasets|tojson}};
 		var csrf = '{{ csrf_token() | safe }}';
+		window.onload = function() {
+			setTimeout(function(){ window.print(); }, 500);
+		};
 </script>
 
 
@@ -63,13 +66,24 @@
 					</div>
 
 					<div class='row'>
-						<div class='col' style='font-weight:bold'>Spin-Independent Model</div>
+						<div class='col' style='font-weight:bold'>Spin-Independent Model:</div>
 						<div class='col'>{{si_modifier}}</div>
 					</div>
 
 				</div>
 			</div>
-			<hr>
+
+</div>
+
+<div class="container" id='dm_footer' style="page-break-after:always;">
+	<div class="row" style="width:100%;">
+		<div class="col justify-content-start" style="text-align: left;">{{ user_manager.USER_APP_NAME }} v1.3 </div>
+		<div class="col justify-content-start" style="text-align: center;">Use XXX to cite.</div>
+		<div class="col justify-content-end" style="text-align: right;"> &copy; 2018 Brandeis University</div>
+	</div>
+</div>
+
+<div class="datainput">
 	<div class="row justify-content-start" style="margin-top:5%;">
 		<div class="col">
 			<h3>Selected Datasets:</h3>
