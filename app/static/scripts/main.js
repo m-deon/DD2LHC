@@ -1,5 +1,7 @@
 var spinClass;
+var bulkUpdate;
 window.onload = function() {
+  bulkUpdate = false;
   var dataBtn = document.getElementById("showData");
   var pdfBtn = document.getElementById("downloadPDF");
   var savePlotBtn = document.getElementById("savePlots");
@@ -29,7 +31,6 @@ window.onload = function() {
 };
 
 function displayMetadata(form){
-  console.log(form);
   checkSpinConsistency(form);
   //Generate the new metadata to display, depending if item is selected
   var displayText = "";
@@ -43,7 +44,8 @@ function displayMetadata(form){
   textElement.innerHTML = displayText;
 }
 
-
+//Ensures all selected data sets have the same spin consistency
+//Avoid checking if bulk update
 function checkSpinConsistency(form){
   var errorIndex = -1;
   var count = 0;
@@ -71,10 +73,11 @@ function checkSpinConsistency(form){
   else if(count == 1){
     spinClass = localSpin;
   }
-  else if(count>1 && errorIndex>=0){
+  else if(count>1 && errorIndex>=0 && !bulkUpdate){
     form.options[errorIndex].selected = false;
     alertSpinSelectError(spinClass);
   }
+  bulkUpdate=false; //Reset the flag
 }
 
 function alertSpinSelectError(spinClass){
@@ -96,6 +99,7 @@ function selectPlots(savedSelection){
     }
   }
   datasetForm.focus();
+  bulkUpdate = true;
   displayMetadata(datasetForm);
 }
 
@@ -162,6 +166,7 @@ function updateConditionalSelect(conditionalSelect){
     }
   }
   //Now make sure the metadata is correct
+  bulkUpdate=true;
   displayMetadata(form);
 }
 

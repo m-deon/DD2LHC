@@ -249,3 +249,12 @@ session[filename] = t
 f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 return redirect(url_for('index'))
 '''
+
+
+<div class="row justify-content-start" style="margin-top:5%;">
+ <div class="col justify-content-center">
+   <h3>Login to View Datasets</h3>
+   <a id="loginBtn" href={{ url_for('user.login') }} class="btn btn-outline-primary plotBtn">Login</a>
+   <a id="registerBtn" href={{ url_for('user.register') }} class="btn btn-outline-primary plotBtn">Register Account</a>
+ </div>
+</div>
