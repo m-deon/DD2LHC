@@ -121,8 +121,10 @@ def get_data(dataset,modifier=''):
         df['type']='DD'
         if spinDependency == 'SD':  #BP
             dd2lhc_SD(df)
-        else:
+        elif spinDependency == 'SI':
             dd2lhc_SI(df, modifier if modifier else si_modifier)
+        else:
+            return None
 
     elif dataset_type == 'LHC':
         df['type']='LHC'
@@ -140,10 +142,9 @@ def get_data(dataset,modifier=''):
         extrap_df = pd.DataFrame({'label':label,'m_DM':extrap_mdm,'m_med':extrap_mMed,'sigma':extrap_sigma,'type':'LHC'})
         df = df.append(extrap_df)
 
-    #Print Data to Verify
-    pd.options.display.max_rows = 5
-    pd.set_option('expand_frame_repr',False)
-    #print(df)
+    else:
+        return None
+    #Data has be read from file, converted, extrapolated, and returned in a DataFrame. None is returned if error converting.
     return df
 
 
@@ -160,8 +161,8 @@ def getSimplifiedPlot():
         x_axis_type="log",
         y_axis_label="mDM",
         y_axis_type="log",
-        plot_width=500,
-        plot_height=500,
+        plot_width=450,
+        plot_height=450,
     )
     plot.title.text_font_size = "1.2em"
     plot.xaxis.axis_label_text_font_size = "14pt"
@@ -177,8 +178,8 @@ def getDDPlot():
         x_axis_type="log",
         y_axis_label="σDM (cross-section)",
         y_axis_type="log",
-        plot_width=500,
-        plot_height=500,
+        plot_width=450,
+        plot_height=450,
     )
     plot.title.text_font_size = "1.2em"
     plot.xaxis.axis_label_text_font_size = "14pt"
@@ -187,7 +188,7 @@ def getDDPlot():
 
 def getLegendPlot():
     legendPlot = figure(
-        plot_width=500,
+        plot_width=450,
         plot_height=250,
         tools="",
         toolbar_location=None

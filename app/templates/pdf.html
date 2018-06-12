@@ -1,25 +1,22 @@
-<!doctype html>
-<html lang="en">
+{% extends "layout.html" %}  {# main/main_base.html extends layout.html #}
 
-<head>
-	<meta charset="utf-8">
-	<title>DM Limiter</title>
+{% block extra_css %}
+<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.14.min.css" type="text/css" />
+{% endblock %}
 
-	<!-- custom -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
-	<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+{% block extra_js %}
+<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.14.min.js"></script>
+<script type="text/javascript">
+		//Collect all the flask variables for use in the main js script
+		var selected_datasets_js = {{selected_datasets|tojson}};
+		var csrf = '{{ csrf_token() | safe }}';
+		window.onload = function() {
+			setTimeout(function(){ window.print(); }, 500);
+		};
+</script>
 
-	<!-- bokeh -->
-	<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.14.min.css" type="text/css" />
-	<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.14.min.js"></script>
 
-	<!-- boostrap -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
-	<!-- plot -->
+	<!-- plot  scripts-->
 	{% if plot_script1 %}
 		{{ plot_script1 | safe}}
 	{% endif %}
@@ -29,41 +26,11 @@
 	{% if plot_script3 %}
 		{{ plot_script3 | safe}}
 	{% endif %}
-</head>
 
-<body class="bg-light text-dark">
+{% endblock %}
 
-	<nav class="navbar navbar-expand-md bg-primary navbar-dark" style="text-align:right">
-		<div class="container">
-			<div class="row">
-			<div class="col justify-content-start" style="text-align: left;">
-				<a class="btn btn-outline-primary text-white" href="http://www.brandeis.edu/departments/physics/">Brandeis University - Center for the Dark Universe</a>
-			</div>
-			</div>
-		</div>
-	</nav>
 
-<div class="container">
-
-<div class="container">
-		<div class="row">
-			<div class="col-md-12" >
-				<div id="dmTitle">
-					DM Limiter
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12" >
-				<p class="subTitle">Dark matter limit comparisons using simplified models</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12" >
-				<p class="">Use XXX to cite us</p>
-			</div>
-		</div>
-	</div>
+{% block content %}
 
 <!-- -->
 
@@ -72,61 +39,83 @@
 </div>
 
 <div class="datainput">
-	<div class="row">
-		<div class="col justify-content-right">
-			{% if plot_div1 is defined %}
-				{{ plot_div1 | safe }}
-			{% endif %}
-		</div>
-		<div class="col justify-content-left">
-			{% if plot_div2 is defined %}
-				{{ plot_div2 | safe }}
-			{% endif %}
-		</div>
-	</div>
+			<div class="row">
+				<div class="col justify-content-right">
+					{% if plot_div1 is defined %}
+						{{ plot_div1 | safe }}
+					{% endif %}
+				</div>
+				<div class="col justify-content-left">
+					{% if plot_div2 is defined %}
+						{{ plot_div2 | safe }}
+					{% endif %}
+				</div>
+			</div>
 
-	<div class="row">
-		<div class="col justify-content-left">
-			{% if plot_div3 is defined %}
-				{{ plot_div3 | safe }}
-			{% endif %}
-		</div>
-		<div class="col"></div>
+			<div class="row">
+				<div class="col justify-content-left">
+					{% if plot_div3 is defined %}
+						{{ plot_div3 | safe }}
+					{% endif %}
+				</div>
+				<div class="col">
+					<br>
+					<div class='row'>
+						<div class='col' style='font-weight:bold'>SM Coupling Constant:</div>
+						<div class='col'>gSM= {{gSM_gSM}}</div>
+					</div>
+
+					<div class='row'>
+						<div class='col' style='font-weight:bold'>Spin-Independent Model:</div>
+						<div class='col'>{{si_modifier}}</div>
+					</div>
+
+				</div>
+			</div>
+
+</div>
+
+<div class="container" id='dm_footer' style="page-break-after:always;">
+	<div class="row" style="width:100%;">
+		<div class="col justify-content-start" style="text-align: left;">{{ user_manager.USER_APP_NAME }} v1.3 </div>
+		<div class="col justify-content-start" style="text-align: center;">Use XXX to cite.</div>
+		<div class="col justify-content-end" style="text-align: right;"> &copy; 2018 Brandeis University</div>
 	</div>
-	<hr>
+</div>
+
+<div class="datainput">
 	<div class="row justify-content-start" style="margin-top:5%;">
 		<div class="col">
 			<h3>Selected Datasets:</h3>
 			{% for data in metadata  %}
 			<div class='row'>
-				<div class='col col-2'>Filename:</div>
+				<div class='col col-3' style='font-weight:bold'>Filename:</div>
 				<div class='col'>{{data['fileName']}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-2'>Label:</div>
+				<div class='col col-3' style='font-weight:bold'>Label:</div>
 				<div class='col'>{{data['dataLabel']}}</div>
 			</div>
 			<div class='row'>
-				<div class='col col-2'>Comment:</div>
+				<div class='col col-3' style='font-weight:bold'>Comment:</div>
 				<div class='col'>{{data['dataComment']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3' style='font-weight:bold'>Reference:</div>
+				<div class='col'>{{data['dataReference'] | safe}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3' style='font-weight:bold'>Experiment:</div>
+				<div class='col'>{{data['experiment']}}</div>
+			</div>
+			<div class='row'>
+				<div class='col col-3' style='font-weight:bold'>Spin:</div>
+				<div class='col'>{{data['spinDependency']}}</div>
 			</div>
 			<hr>
 			{% endfor %}
 		</div>
-		<div class="col justify-content-end">
-			<h3>Selected Standard Model coupling constant:</h3>
-			<p>	gSM= {{gSM_gSM}}<br>
-			</p>
-			<h3>Spin-Independent Model</h3>
-			<p>	{{si_modifier}}<br>
-			</p>
-		</div>
 	</div>
 </div>
 
-</div>
-
-
-</div> <!-- Container -->
-</body>
-</html>
+{% endblock %}
