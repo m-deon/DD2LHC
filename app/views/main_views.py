@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
-from flask import Blueprint, redirect, render_template
-from flask import request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_user import current_user, login_required, roles_required
 
-from app import db
-from app import app
+from app import app, db, getUserPath
 from app.models.user_models import UserProfileForm
 
 #DM Limiter
@@ -23,14 +21,14 @@ from flask import send_from_directory
 import numpy as np
 #import pdfkit
 #DM Packages
-from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot
+from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot, validateFile
 from app.dmplotter.forms import DatasetForm, UploadForm, Set_gSM_Form
 from app.dmplotter.conversion import set_gSM, get_gSM
 #DM Default
 ALLOWED_EXTENSIONS = set(['xml'])
 selected_datasets = []
 colors = cycle(['red', 'blue', 'green', 'orange'])
-savedPlots = json.load(open("savedPlots.json"))
+
 def determine(data):
     if data is None:
         return False;
@@ -42,8 +40,10 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def getSavedPlots():
-    plots = savedPlots
-    return plots
+    globalPlots = json.load(open("savedPlots.json"))
+    userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
+    allPlots = {key: value for (key, value) in ({"":""}.items() + globalPlots.items() + userPlots.items())}
+    return allPlots
 #End DM
 
 main_blueprint = Blueprint('main', __name__, template_folder='templates')
@@ -193,15 +193,14 @@ def updateValues():
 
 @main_blueprint.route('/savePlot', methods=['GET', 'POST'])
 def savePlot():
-    global savedPlots
-
     savedPlotName = request.form['name']
     selected_datasets = request.form['data'].split(",")
 
-    #Save to local copy and then flush to disk
-    savedPlots[savedPlotName] = selected_datasets
-    with open('savedPlots.json', 'w') as f:
-        json.dump(savedPlots, f)
+    userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
+    userPlots[savedPlotName] = selected_datasets
+
+    with open('data/'+getUserPath()+'/userPlots.json', 'w') as f:
+        json.dump(userPlots, f)
     return redirect(url_for('main.dmplotter'))
 
 @main_blueprint.route('/pdf', methods=['GET', 'POST'])
@@ -278,5 +277,14 @@ def upload():
     if form.validate_on_submit():
         f = form.data_file.data
         filename = secure_filename(f.filename)
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        directory = os.path.join(app.config['UPLOAD_FOLDER'],getUserPath())
+        #Validate Data here
+        if validateFile(f.read()):
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            f.seek(0)
+            f.save(os.path.join(directory, filename))
+            flash(u'File uploaded.','info')
+        else:
+            flash(u'Could not parse input file- check required fields.','error')
     return redirect(url_for('main.dmplotter'))
