@@ -23,9 +23,10 @@ MAIL_SERVER = 'smtp.mailgun.org'
 MAIL_PORT = 587
 MAIL_USE_SSL = False
 MAIL_USE_TLS = True
-MAIL_USERNAME = 'dmlimiter@mail.emmatech.us'
-MAIL_PASSWORD = 'brandeismail'
 
+MAIL_USERNAME = os.getenv('DML_MAIL_USER','')
+MAIL_PASSWORD = os.getenv('DML_MAIL_PSWD','')
+MAIL_DEFAULT_SENDER = os.getenv('DML_MAIL_SENDER','app@dmlimiter.com')
 
 # Flask-User settings
 USER_APP_NAME = 'DM Limiter'
