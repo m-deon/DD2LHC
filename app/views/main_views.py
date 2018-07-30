@@ -97,7 +97,7 @@ def theory_page():
     return render_template('theory.html')
 
 @main_blueprint.route('/dmplotter', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def dmplotter():
     known_datasets = get_datasets()
     gu, gd, gs = get_gSM()
