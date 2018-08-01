@@ -41,7 +41,9 @@ def allowed_file(filename):
 
 def getSavedPlots():
     globalPlots = json.load(open("savedPlots.json"))
-    userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
+    userPlots  = {}
+    if(os.path.isfile('data/'+getUserPath()+'/userPlots.json')):
+        userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
     allPlots = {key: value for (key, value) in ({"":""}.items() + globalPlots.items() + userPlots.items())}
     return allPlots
 #End DM
@@ -195,8 +197,13 @@ def updateValues():
 def savePlot():
     savedPlotName = request.form['name']
     selected_datasets = request.form['data'].split(",")
-
-    userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
+    userPlots = {}
+    #Create the User directory if not exists- TODO: do at time of account setup
+    directory = 'data/'+getUserPath()
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    if(os.path.isfile(directory+'/userPlots.json')):
+        userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
     userPlots[savedPlotName] = selected_datasets
 
     with open('data/'+getUserPath()+'/userPlots.json', 'w') as f:

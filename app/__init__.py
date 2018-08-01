@@ -113,4 +113,8 @@ def init_email_error_handler(app):
     # Log errors using: app.logger.error('Some error message')
 
 def getUserPath():
-    return str(current_user.id)
+    #If there is no user logged in (ie develop mode), return temp directory
+    path = 'temp'
+    if(current_user.id):
+        path = str(current_user.id)
+    return path
