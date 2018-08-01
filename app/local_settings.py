@@ -6,7 +6,7 @@ import os
 # *****************************
 
 # DO NOT use "DEBUG = True" in production environments
-DEBUG = False
+DEBUG = True
 
 # DO NOT use Unsecure Secrets in production environments
 # Generate a safe one with:
@@ -19,7 +19,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False    # Avoids a SQLAlchemy Warning
 
 # Flask-Mail settings
 # Note: Using Mailserver provided by EmmaTech (JCope) via Mailgun
-MAIL_SERVER = 'smtp.mailgun.org'
+MAIL_SERVER = os.getenv('DML_MAIL_SERVER','smtp.mailgun.org')
 MAIL_PORT = 587
 MAIL_USE_SSL = False
 MAIL_USE_TLS = True

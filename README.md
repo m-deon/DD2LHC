@@ -88,6 +88,14 @@ Create a virtual python environment using version 2.7
 Use this file to install the package requirements on
 `deploy/pythonanywhere/requirements.txt`
 
+Setup the `.env` file with variables for SMTP (values found in Slack)
+```
+DML_MAIL_SERVER=
+DML_MAIL_USER=
+DML_MAIL_PSWD=
+DML_MAIL_SENDER=
+```
+
 Example WSIG file
 `deploy/pythonanywhere/DMLimiter_WSIG.py`
 
