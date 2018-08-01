@@ -21,6 +21,10 @@ window.onload = function() {
 
   savePlotBtn.onclick = function () {
     var plotNameInput = document.getElementById("plotName");
+    if(plotNameInput.value == ''){
+      alert('Please provide a name for the data set.');
+      return false;
+    }
     //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
     post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
     return false;

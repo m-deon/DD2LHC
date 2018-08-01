@@ -17,3 +17,4 @@ Flask-Migrate==2.0.2
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
 git+https://github.com/lingthio/Flask-User.git@master#egg=Flask-User
+python-dotenv

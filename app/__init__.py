@@ -9,7 +9,7 @@ from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_migrate import Migrate, MigrateCommand
-from flask_user import UserManager
+from flask_user import UserManager, current_user
 from flask_wtf.csrf import CSRFProtect
 
 
@@ -27,7 +27,6 @@ def create_app(extra_config_settings={}):
     # Instantiate Flask
     app.config['UPLOAD_FOLDER'] = 'data/'
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-    app.secret_key = 's3cr3t'
 
     # Load common settings
     app.config.from_object('app.settings')
@@ -112,3 +111,10 @@ def init_email_error_handler(app):
     app.logger.addHandler(mail_handler)
 
     # Log errors using: app.logger.error('Some error message')
+
+def getUserPath():
+    #If there is no user logged in (ie develop mode), return temp directory
+    path = 'temp'
+    if(current_user.id):
+        path = str(current_user.id)
+    return path
