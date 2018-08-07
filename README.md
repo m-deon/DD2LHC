@@ -84,9 +84,20 @@ https://help.pythonanywhere.com/pages/Flask/
 ***Note: Replace `JCope` with actual username/account name***
 Create a virtual python environment using version 2.7
 `mkvirtualenv --python=/usr/bin/python2.7 my-virtualenv`
+
 Use this file to install the package requirements on
 `deploy/pythonanywhere/requirements.txt`
+
+Setup the `.env` file with variables for SMTP (values found in Slack)
+```
+DML_MAIL_SERVER=
+DML_MAIL_USER=
+DML_MAIL_PSWD=
+DML_MAIL_SENDER=
+```
+
 Example WSIG file
 `deploy/pythonanywhere/DMLimiter_WSIG.py`
+
 Set working path to
 `/home/JCope/DD2LHC`

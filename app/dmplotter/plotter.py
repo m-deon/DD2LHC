@@ -5,8 +5,10 @@ import os
 import numpy as np
 from glob import glob
 from flask import session
+from app import getUserPath
 import untangle
 from io import StringIO
+import ntpath
 
 from bokeh.plotting import figure
 
@@ -21,8 +23,9 @@ DATA_FILE_EXT = '.xml'
 
 def dataset_names():
     datasets = glob('data/*.xml')
+    datasets.extend(glob('data/'+getUserPath()+'/*.xml'))
     for dataset in datasets:
-        dataset = dataset.replace(DATA_LOCATION, '')
+        dataset = ntpath.basename(dataset)
         dataset = dataset.replace(DATA_FILE_EXT, '')
         yield dataset
 
@@ -36,8 +39,23 @@ def set_SI_modifier(modifier):
 def get_SI_modifier():
     return si_modifier
 
+def validateFile(input_file):
+    #XML Parsing Test
+    result = untangle.parse(input_file)
+    #Check the required fields
+    dataValues = result.limit.data_values.cdata
+    experiment = result.limit.experiment.cdata
+    dataformat = result.limit.dataformat.cdata
+    spinDependency = result.limit.spin_dependency.cdata
+    yRescale = result.limit.y_rescale.cdata
+    if not (dataValues or experiment or dataformat or spinDependency or yRescale):
+        return False
+    return True
+
 def get_metadata(dataset):
     input_file = os.path.join(DATA_LOCATION, dataset + DATA_FILE_EXT)
+    if(os.path.isfile(input_file) == False):
+        input_file = os.path.join(DATA_LOCATION+getUserPath(), dataset + DATA_FILE_EXT)
 
     #XML Parsing Test
     result = untangle.parse(input_file)
@@ -87,7 +105,10 @@ def parseDataformat(dataformat):
 def get_data(dataset,modifier=''):
 
     input_file = os.path.join(DATA_LOCATION, dataset + DATA_FILE_EXT)
-    #TODO: Validate file/dataset
+    if(os.path.isfile(input_file) == False):
+        input_file = os.path.join(DATA_LOCATION+getUserPath(), dataset + DATA_FILE_EXT)
+    if(os.path.isfile(input_file) == False):
+        return None
 
     #XML Parsing
     result = untangle.parse(input_file)
@@ -121,8 +142,10 @@ def get_data(dataset,modifier=''):
         df['type']='DD'
         if spinDependency == 'SD':  #BP
             dd2lhc_SD(df)
-        else:
+        elif spinDependency == 'SI':
             dd2lhc_SI(df, modifier if modifier else si_modifier)
+        else:
+            return None
 
     elif dataset_type == 'LHC':
         df['type']='LHC'
@@ -140,10 +163,9 @@ def get_data(dataset,modifier=''):
         extrap_df = pd.DataFrame({'label':label,'m_DM':extrap_mdm,'m_med':extrap_mMed,'sigma':extrap_sigma,'type':'LHC'})
         df = df.append(extrap_df)
 
-    #Print Data to Verify
-    pd.options.display.max_rows = 5
-    pd.set_option('expand_frame_repr',False)
-    #print(df)
+    else:
+        return None
+    #Data has be read from file, converted, extrapolated, and returned in a DataFrame. None is returned if error converting.
     return df
 
 
@@ -160,8 +182,8 @@ def getSimplifiedPlot():
         x_axis_type="log",
         y_axis_label="mDM",
         y_axis_type="log",
-        plot_width=500,
-        plot_height=500,
+        plot_width=450,
+        plot_height=450,
     )
     plot.title.text_font_size = "1.2em"
     plot.xaxis.axis_label_text_font_size = "14pt"
@@ -177,8 +199,8 @@ def getDDPlot():
         x_axis_type="log",
         y_axis_label="σDM (cross-section)",
         y_axis_type="log",
-        plot_width=500,
-        plot_height=500,
+        plot_width=450,
+        plot_height=450,
     )
     plot.title.text_font_size = "1.2em"
     plot.xaxis.axis_label_text_font_size = "14pt"
@@ -187,7 +209,7 @@ def getDDPlot():
 
 def getLegendPlot():
     legendPlot = figure(
-        plot_width=500,
+        plot_width=450,
         plot_height=250,
         tools="",
         toolbar_location=None

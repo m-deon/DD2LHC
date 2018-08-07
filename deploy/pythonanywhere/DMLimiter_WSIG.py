@@ -5,6 +5,8 @@
 #
 #
 import sys
+import os
+from dotenv import load_dotenv
 #
 ## The "/home/JCope" below specifies your home
 ## directory -- the rest should be the directory you uploaded your Flask
@@ -13,6 +15,11 @@ import sys
 ## ...or uploaded files to the directory "myproject", then you should
 ## specify "/home/JCope/myproject"
 path = '/home/JCope/DD2LHC'
+
+#Apply environment variables
+project_folder = os.path.expanduser(path)  # adjust as appropriate
+load_dotenv(os.path.join(project_folder, '.env'))
+
 if path not in sys.path:
     sys.path.append(path)
 

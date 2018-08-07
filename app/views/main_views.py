@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
-from flask import Blueprint, redirect, render_template
-from flask import request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_user import current_user, login_required, roles_required
 
-from app import db
-from app import app
+from app import app, db, getUserPath
 from app.models.user_models import UserProfileForm
 
 #DM Limiter
@@ -21,15 +19,16 @@ import bokeh
 import pandas as pd
 from flask import send_from_directory
 import numpy as np
+#import pdfkit
 #DM Packages
-from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot
+from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot, validateFile
 from app.dmplotter.forms import DatasetForm, UploadForm, Set_gSM_Form
 from app.dmplotter.conversion import set_gSM, get_gSM
 #DM Default
 ALLOWED_EXTENSIONS = set(['xml'])
 selected_datasets = []
 colors = cycle(['red', 'blue', 'green', 'orange'])
-savedPlots = json.load(open("savedPlots.json"))
+
 def determine(data):
     if data is None:
         return False;
@@ -41,8 +40,12 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def getSavedPlots():
-    plots = savedPlots
-    return plots
+    globalPlots = json.load(open("savedPlots.json"))
+    userPlots  = {}
+    if(os.path.isfile('data/'+getUserPath()+'/userPlots.json')):
+        userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
+    allPlots = {key: value for (key, value) in ({"":""}.items() + globalPlots.items() + userPlots.items())}
+    return allPlots
 #End DM
 
 main_blueprint = Blueprint('main', __name__, template_folder='templates')
@@ -192,16 +195,88 @@ def updateValues():
 
 @main_blueprint.route('/savePlot', methods=['GET', 'POST'])
 def savePlot():
-    global savedPlots
-
     savedPlotName = request.form['name']
     selected_datasets = request.form['data'].split(",")
+    userPlots = {}
+    #Create the User directory if not exists- TODO: do at time of account setup
+    directory = 'data/'+getUserPath()
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    if(os.path.isfile(directory+'/userPlots.json')):
+        userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
+    userPlots[savedPlotName] = selected_datasets
 
-    #Save to local copy and then flush to disk
-    savedPlots[savedPlotName] = selected_datasets
-    with open('savedPlots.json', 'w') as f:
-        json.dump(savedPlots, f)
+    with open('data/'+getUserPath()+'/userPlots.json', 'w') as f:
+        json.dump(userPlots, f)
     return redirect(url_for('main.dmplotter'))
+
+@main_blueprint.route('/pdf', methods=['GET', 'POST'])
+def generatePDF():
+
+    gu, gd, gs = get_gSM()
+    si_modifier = get_SI_modifier()
+
+    global selected_datasets
+    #Will re-use the previously selected values for the dataset_type
+    #Optional: provide datasel file names in the POST parameters
+    if request.method == 'POST':
+        print('Use this are to parse to posted datasets');
+
+    datasets = selected_datasets
+    dfs = map(get_data, datasets)
+
+    #Filter, TODO: Apply filter to selected_datasets prior to conversion (attempt)
+    #get_data will return a 'None' object if the selected dataset could not be converted, (bad experiement string..)
+    dfs = [x for x in dfs if determine(x)]
+
+    metadata = map(get_metadata, datasets)
+
+    p1 = getSimplifiedPlot()
+    p2 = getDDPlot()
+    legendPlot = getLegendPlot()
+
+    legendItems = []
+    x = 1
+    y = 2*x
+    for df, color in zip(dfs, colors):
+        label = df['label'].any()
+        df['color'] = color
+        p1.line(df['m_med'], df['m_DM'], line_width=2, color=color)
+        p2.line(df['m_DM'], df['sigma'], line_width=2, color=color)
+        line = legendPlot.line(x,y,line_width=2, color=color)
+        legendItems.append((label,[line]))
+
+    #Initialize all_data in the case that all datasets selected where invalid
+    all_data = pd.DataFrame()
+    if(len(dfs) > 0):
+        all_data = pd.concat(dfs)
+
+    legend = Legend(items=legendItems, location=(0, 0))
+    legendPlot.add_layout(legend, 'above')
+
+    script1, div1 = components(p1, CDN)
+    script2, div2 = components(p2, CDN)
+    script3, div3 = components(legendPlot,CDN)
+    html =  render_template('pdf.html',
+                           plot_script1=script1, plot_div1=div1,
+                           plot_script2=script2, plot_div2=div2,
+                           plot_script3=script3, plot_div3=div3,
+                           bokeh_version=bokeh.__version__,
+                           metadata = metadata,
+                           selected_datasets = selected_datasets,
+                           si_modifier = si_modifier,
+                           gSM_gSM=gu)
+    return html
+'''
+    css = 'app/static/css/style.css'
+    pdf = pdfkit.from_string(html, False, css=css)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = \
+                    'inline; filename=%s.pdf' % 'dd2lhc'
+    return response
+'''
 
 @main_blueprint.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -209,5 +284,14 @@ def upload():
     if form.validate_on_submit():
         f = form.data_file.data
         filename = secure_filename(f.filename)
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        directory = os.path.join(app.config['UPLOAD_FOLDER'],getUserPath())
+        #Validate Data here
+        if validateFile(f.read()):
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            f.seek(0)
+            f.save(os.path.join(directory, filename))
+            flash(u'File uploaded.','info')
+        else:
+            flash(u'Could not parse input file- check required fields.','error')
     return redirect(url_for('main.dmplotter'))

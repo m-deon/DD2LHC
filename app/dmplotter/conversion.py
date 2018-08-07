@@ -24,7 +24,7 @@ def set_gSM(_gU,_gD,_gS):
 
 def get_gSM():
     return gu, gd, gs
-    
+
 def dd2lhc_SD(df): #using for axial interactions
     f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
 
@@ -41,7 +41,6 @@ def dd2lhc_SD(df): #using for axial interactions
 def dd2lhc_SI(df, modifier): #for scalar and vector interactins, scalar should be default (Higgs like)
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
     df['sigma_in_GeV'] = df['sigma'] * conv_units
-    print modifier
     if(modifier == 'scalar'):
         fmMed2 = (mn/v)*gSM*gDM*(fup+fdp+fsp+2./27.*fTG*3.);
         df['m_med']=np.power(fmMed2*df['mu_nDM'],0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
