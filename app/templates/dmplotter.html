@@ -79,6 +79,34 @@
 		</div>
 
 	</div>
+	<hr>
+	<div class="row justify-content-start">
+		<div class="col">
+			<div style="display:block;">
+			<h3>Filter Datasets</h3>
+
+			<select multiple class='filterBox' onchange="updateFilter(this,'experiment')">
+					<option>ATLAS</option>
+					<option>CMS</option>
+					<option>LUX</option>
+			</select>
+
+			<select multiple class='filterBox' onchange="updateFilter(this,'year')">
+					<option>2017</option>
+					<option>2016</option>
+		 	</select>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="row justify-content-start">
+		<div class="col" id='filterDatasets'>
+			<!-- Metadata from the filtered datasets will be displayed here. -->
+		</div>
+	</div>
+	<hr>
+
 <div class="row justify-content-start" style="margin-top:10px;">
 	<div class="col">
 		<h3>Standard Model coupling constant:</h3>

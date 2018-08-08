@@ -73,6 +73,7 @@ def get_metadata(dataset):
     xUnits = result.limit.x_units.cdata
     yRescale = result.limit.y_rescale.cdata
     yUnits = result.limit.y_units.cdata
+    year = result.limit.year.cdata
 
     metadata = {'fileName':dataset,
                 'dataComment':dataComment,
@@ -87,7 +88,8 @@ def get_metadata(dataset):
                 'xRescale':xRescale,
                 'xUnits':xUnits,
                 'yRescale':yRescale,
-                'yUnits':yUnits}
+                'yUnits':yUnits,
+                'year':year}
     #print (metadata)
     return metadata
 

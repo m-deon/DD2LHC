@@ -82,3 +82,6 @@ table.dataframe, .dataframe th, .dataframe td {
 #dataDiv{
   display:none;
 }
+.filterBox{
+  margin: 10px 20px;
+}

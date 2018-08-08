@@ -48,6 +48,45 @@ function displayMetadata(form){
   textElement.innerHTML = displayText;
 }
 
+/**
+* Notes:
+*  Only one filter is applied at a time.
+*  No support for multiple selection within a certain filter (ie CMS and LUX will result in CMS only)
+*  Does not clear other filter selections, so may appear as if multple selects are made.
+**/
+function updateFilter(selectFilter,filterType){
+  var displayText = "<h4>Select a Dataset:</h4>";
+  //Grab the main form that displays the dataset selection
+  var datasetForm = document.getElementById("datasets");
+  for (filterIndex=0; filterIndex<selectFilter.options.length; filterIndex++) {
+      if (selectFilter.options[filterIndex].selected) {
+        //Grab the filter from the selected value
+        var filter = selectFilter.options[filterIndex].value;
+        //For each dataset option (pulled from the main selection form)
+        for (datasetIndex=0; datasetIndex<datasetForm.options.length; datasetIndex++) {
+          if(metadata[datasetIndex][filterType] == filter){
+             //Wrap the metadata in a clickable element- take action when the dataset is selected
+             displayText += "<div class='filteredOption' onClick='selectDataset("+datasetIndex+")'>";
+             displayText += getMetadataDisplay(metadata[datasetIndex]);
+             displayText += "</div>"
+
+          }
+        }
+      }
+  }
+  //Updated the selectable datasets from the filtered option
+  var textElement = document.getElementById('filterDatasets');
+  textElement.innerHTML = displayText;
+}
+//Select/Deselect the dataset option from the main list
+function selectDataset(datasetIndex){
+  var datasetForm = document.getElementById("datasets");
+  datasetForm.options[datasetIndex].selected = !(datasetForm.options[datasetIndex].selected);
+  //Focus the main select form, update the metadata for the options selected in the main select form
+  datasetForm.focus();
+  displayMetadata(datasetForm);
+}
+
 //Ensures all selected data sets have the same spin consistency
 //Avoid checking if bulk update
 function checkSpinConsistency(form){
@@ -144,7 +183,8 @@ function getMetadataDisplay(metadata){
   displayText += metadata.spinDependency;
   displayText += "</div>";
   displayText += "</div>";
-  displayText = displayText + '<hr>';
+  displayText += '<hr>';
+
   return displayText;
 }
 
