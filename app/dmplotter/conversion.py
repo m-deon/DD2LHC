@@ -26,6 +26,7 @@ def get_gSM():
     return gu, gd, gs
 
 def dd2lhc_SD(df): #using for axial interactions
+    print("dd 2 lhc SD")
     f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
 
     # calculate mu
@@ -39,35 +40,46 @@ def dd2lhc_SD(df): #using for axial interactions
 
 
 def dd2lhc_SI(df, modifier): #for scalar and vector interactins, scalar should be default (Higgs like)
+    print("dd 2 lhc SI")
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
     df['sigma_in_GeV'] = df['sigma'] * conv_units
     if(modifier == 'scalar'):
+        print("modifier = scalar")
         fmMed2 = (mn/v)*gSM*gDM*(fup+fdp+fsp+2./27.*fTG*3.);
         df['m_med']=np.power(fmMed2*df['mu_nDM'],0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
     else:
+        print("modifier = not scalar")
         df['m_med'] = np.power((2*gu+gd)*gDM*df['mu_nDM'], 0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
 
-def lhc2dd_SD(df,modifier='proton'):
+def lhc2dd_SD(df,modifier):
+#def lhc2dd_SD(df,modifier='proton'):
+    print("lhc 2 dd SD")
     # calculate mu
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
 
     if(modifier == 'neutron'):
+        print("modifier = neutron")
         f = abs(gDM * (gu * Delta_u_n + gd * Delta_d_n + gs * Delta_s_n))
     else:
+        print("modifier  = not neutron")
         f = abs(gDM * (gu * Delta_u_p + gd * Delta_d_p + gs * Delta_s_p))
 
     # apply conversion units to sigma
     df['sigma_in_GeV'] = 3 * np.power(f * df['mu_nDM'], 2.) / (math.pi * np.power(df['m_med'], 4.))
     df['sigma'] = df['sigma_in_GeV']/conv_units
 
-def lhc2dd_SI(df,modifier='scalar'):
+def lhc2dd_SI(df,modifier):
+#def lhc2dd_SI(df,modifier='scalar'):
+    print("lhc 2 dd SI")
     # calculate mu
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
 
     if(modifier == 'vector'):
+        print("modifier = vector")
         f = (2 * gu + gd) * gDM
         sigma_eq=np.power(f * df['mu_nDM'], 2.) / (math.pi * np.power(df['m_med'], 4.))
     else:
+        print("modifier = not vector")
         f=(mn/v)*gSM*gDM*(fup+fdp+fsp+2./27.*fTG*3.)/np.power(df['m_med'],2.0)
         sigma_eq=np.power(f*df['mu_nDM'],2.)/(math.pi)
 
