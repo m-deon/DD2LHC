@@ -5,6 +5,7 @@ window.onload = function() {
   var dataBtn = document.getElementById("showData");
   var pdfBtn = document.getElementById("downloadPDF");
   var savePlotBtn = document.getElementById("savePlots");
+  var clearBtn = document.getElementById("clearSelection");
 
   dataBtn.onclick = function() {
     var data = document.getElementById("dataDiv");
@@ -28,6 +29,22 @@ window.onload = function() {
     //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
     post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
     return false;
+  };
+
+  clearBtn.onclick = function () {
+   alert('clear pressed');
+   var form = document.getElementById("datasets");
+   for (i=0; i<form.options.length; i=i+1) {
+     var meta = metadata[i];
+     //If this meta matches the selected input, then we select in form
+     form.options[i].selected = false; //Deselect previous selction
+//     //if(meta['spinDependency'] === selectedInput){
+//     //  form.options[i].selected = true;
+//     }
+   }
+//   //Now make sure the metadata is correct
+   bulkUpdate=true;
+   displayMetadata(form);
   };
   //Update the initial metadata
   var datasetForm = document.getElementById("datasets");

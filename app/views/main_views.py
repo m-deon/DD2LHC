@@ -115,6 +115,7 @@ def dmplotter():
     dataset_upload = UploadForm()
 
     global selected_datasets
+    print(selected_datasets)
 
     if request.method == 'POST':
         # check if the post request has the file part
