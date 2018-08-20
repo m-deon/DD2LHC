@@ -9,7 +9,7 @@
   <date-of-run-start type="date">2016-11-22</date-of-run-start>
   <default-color>DkB</default-color>
   <default-style>Solid</default-style>
-  <experiment nil="true"></experiment>
+  <experiment>XENON1T</experiment>
   <dataformat>DD</dataformat>
   <measurement-type>Dir</measurement-type>
   <nomhash type="yaml">--- 

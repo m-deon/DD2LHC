@@ -85,16 +85,29 @@
 			<div style="display:block;">
 			<h3>Filter Datasets</h3>
 
-			<select multiple class='filterBox' onchange="updateFilter(this,'experiment')">
-					<option>ATLAS</option>
+			<select multiple class='filterBox' onchange="updateFilter(this,'experiment')" >
 					<option>CMS</option>
 					<option>LUX</option>
+					<option>LHC</option>
+					<option>PandaX</option>
+					<option>PICO</option>
+					<option>DarkSide</option>
+					<option>IceCube</option>
+					<option>XENON100</option>
+					<option>XENON1T</option>
+			</select>
+
+			<select multiple class='filterBox' onchange="updateFilter(this,'spinDependency')" >
+					<option>SD</option>
+					<option>SI</option>
 			</select>
 
 			<select multiple class='filterBox' onchange="updateFilter(this,'year')">
+					<option>2018</option>					
 					<option>2017</option>
 					<option>2016</option>
 		 	</select>
+
 
 			</div>
 		</div>
